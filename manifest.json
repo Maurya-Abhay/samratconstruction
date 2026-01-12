@@ -1,0 +1,21 @@
+{
+  "name": "Smrtbuild App",
+  "short_name": "Smrtbuild",
+  "start_url": "/index.php",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1976d2",
+  "description": "Smrtbuild App - Modern PWA for Samrat Construction Private Limited. Install and use as an app!",
+  "icons": [
+    {
+      "src": "/admin/assets/smrticon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/admin/assets/smrticon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
