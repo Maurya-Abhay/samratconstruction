@@ -1,0 +1,69 @@
+# Disable directory listing
+Options -Indexes
+# Extra block for specific sensitive files
+<FilesMatch "^(brevo_api_key\.txt|brevo_sender\.txt)$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+######################################################################
+
+# Samrat Construction Private Limited - Admin Security .htaccess
+
+# Modern, maintainable, and secure configuration
+
+######################################################################
+
+
+
+# Show a modern branded error page for forbidden access
+
+ErrorDocument 403 /admin/403.html
+
+
+
+# Block direct access to sensitive files (API keys, config, dumps, etc.)
+
+<FilesMatch "\.(txt|sql|json|ini|env|db|bak)$">
+
+  Order allow,deny
+
+  Deny from all
+
+</FilesMatch>
+
+
+
+# Block access to .htaccess itself for extra security
+
+<Files ".htaccess">
+
+  Order allow,deny
+
+  Deny from all
+
+</Files>
+
+
+
+# (Optional) Block access to backup and weight folders
+
+# <Directory "backups">
+
+#   Order allow,deny
+
+#   Deny from all
+
+# </Directory>
+
+# <Directory "weights">
+
+#   Order allow,deny
+
+#   Deny from all
+
+# </Directory>
+
+
+
+# End of file
+
