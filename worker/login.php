@@ -95,26 +95,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Worker Login | Samrat Construction</title>
-    
-    <link rel="icon" href="../admin/assets/smrticon.png" type="image/png">
+    <title>Worker Login | JP Construction</title>
+    <link rel="icon" href="../admin/assets/jp_construction_logo.webp" type="image/webp">
+    <meta name="description" content="Login to your JP Construction worker account to manage attendance, payments, and work details.">
+    <meta name="keywords" content="JP Construction worker login, worker portal, attendance, payments, construction, India">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://jpconstruction.in/worker/login.php">
     <meta name="theme-color" content="#0d6efd" />
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Worker Login | JP Construction">
+    <meta property="og:description" content="Login to your JP Construction worker account to manage attendance, payments, and work details.">
+    <meta property="og:url" content="https://jpconstruction.in/worker/login.php">
+    <meta property="og:image" content="https://jpconstruction.in/admin/assets/jp_construction_logo.webp">
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Worker Login | JP Construction">
+    <meta name="twitter:description" content="Login to your JP Construction worker account to manage attendance, payments, and work details.">
+    <meta name="twitter:image" content="https://jpconstruction.in/admin/assets/jp_construction_logo.webp">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <style>
         :root {
             --primary-color: #0d6efd;
             --primary-hover: #0b5ed7;
             --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
         }
-
         html, body {
             height: 100%;
             margin: 0;
@@ -268,7 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="login-card">
         <div class="card-header-custom">
-            <img src="../admin/assets/smrticon.png" alt="Logo" class="logo-img">
+            <img src="../admin/assets/jp_construction_logo.webp" alt="Logo" class="logo-img">
             <h5 class="fw-bold text-dark mb-0">Worker Login</h5>
             <p class="text-muted small mb-0">Team Access</p>
         </div>

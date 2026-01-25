@@ -25,46 +25,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_attendance']))
         if (!$photo_data || !$location) {
             $msg = ['type' => 'error', 'text' => 'Photo and location required!'];
         } else {
-            // Cloudinary credentials (replace with your real values)
-            $cloud_name = 'dppoq5cqf';
-            $upload_url = 'https://api.cloudinary.com/v1_1/' . $cloud_name . '/image/upload';
-            $upload_preset = 'unsigned_preset'; // Make sure this preset exists in your Cloudinary dashboard
-
             $img_data = explode(',', $photo_data)[1];
-            $temp_file = tempnam(sys_get_temp_dir(), 'att_');
-            file_put_contents($temp_file, base64_decode($img_data));
-
-            $fields = [
-                'file' => new CURLFile($temp_file, 'image/jpeg'),
-                'upload_preset' => $upload_preset
-            ];
-
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $upload_url);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-            $response = curl_exec($ch);
-            $curl_error = curl_error($ch);
-            curl_close($ch);
-            unlink($temp_file);
-
-            $cloudinary_url = '';
-            $error_msg = '';
-            if ($response) {
-                $resp_data = json_decode($response, true);
-                if (isset($resp_data['secure_url'])) {
-                    $cloudinary_url = $resp_data['secure_url'];
-                } elseif (isset($resp_data['error']['message'])) {
-                    $error_msg = $resp_data['error']['message'];
-                }
-            } else {
-                $error_msg = $curl_error ?: 'No response from Cloudinary.';
+            $upload_dir = __DIR__ . '/../admin/uploads/';
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0777, true);
             }
-
-            if ($cloudinary_url) {
+            $file_name = 'attendance_' . $worker_id . '_' . date('Ymd_His') . '_' . rand(1000,9999) . '.jpg';
+            $target_path = $upload_dir . $file_name;
+            file_put_contents($target_path, base64_decode($img_data));
+            if (file_exists($target_path)) {
+                $local_url = 'uploads/' . $file_name;
                 $stmt = $conn->prepare("INSERT INTO digital_attendance_requests (worker_id, date, photo, location, status) VALUES (?, ?, ?, ?, 'pending')");
-                $stmt->bind_param('isss', $worker_id, $today, $cloudinary_url, $location);
+                $stmt->bind_param('isss', $worker_id, $today, $local_url, $location);
                 if ($stmt->execute()) {
                     $msg = ['type' => 'success', 'text' => 'Attendance request submitted! Awaiting admin approval.'];
                     // Refresh $existing for status display

@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['update_upi'])){
         }
     }
     
-    // Secure file upload for UPI QR (Cloudinary migration)
+    // Secure file upload for UPI QR
     if (isset($_FILES['upi_qr']) && $_FILES['upi_qr']['error']===UPLOAD_ERR_OK){
         $ext = strtolower(pathinfo($_FILES['upi_qr']['name'], PATHINFO_EXTENSION));
         $allowed = ['jpg','jpeg','png','webp','gif'];
@@ -125,15 +125,20 @@ if ($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['update_upi'])){
                 $upi_error = 'Malware detected, upload blocked.';
                 error_log('Malware upload attempt: '.$_FILES['upi_qr']['name'].' by user ID: '.$worker_id);
             } else {
-                // Upload to Cloudinary
-                $cloudinary_url = upload_to_cloudinary($tmp, 'worker_qr');
-                if ($cloudinary_url) {
+                $upload_dir = __DIR__ . '/../admin/uploads/';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+                $ext = pathinfo($_FILES['upi_qr']['name'], PATHINFO_EXTENSION);
+                $file_name = 'worker_qr_' . $worker_id . '_' . time() . '.' . $ext;
+                $target_path = $upload_dir . $file_name;
+                if (move_uploaded_file($tmp, $target_path)) {
                     $stmt_qr = $conn->prepare("UPDATE worker_payment_settings SET upi_qr_path=? WHERE worker_id=?");
-                    $stmt_qr->bind_param('si', $cloudinary_url, $worker_id);
+                    $stmt_qr->bind_param('si', 'uploads/' . $file_name, $worker_id);
                     $stmt_qr->execute();
                     $stmt_qr->close();
                     $upi_success = ($upi_success? $upi_success.' ' : '').'QR uploaded.';
-                } else { $upi_error = 'Cloudinary upload failed.'; }
+                } else { $upi_error = 'Error uploading QR image to server.'; }
             }
         }
     }
@@ -153,7 +158,7 @@ if (!$worker) {
     exit();
 }
 
-$photoPath = !empty($worker['photo']) && preg_match('#^https?://#', $worker['photo']) ? $worker['photo'] : 'https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/v1/default-avatar.png';
+$photoPath = !empty($worker['photo']) ? '../admin/' . (strpos($worker['photo'], 'uploads/') === 0 ? $worker['photo'] : 'uploads/' . $worker['photo']) : '../admin/assets/default-avatar.png';
 
 // Fetch current UPI settings
 $wps_stmt = $conn->prepare("SELECT * FROM worker_payment_settings WHERE worker_id=?");

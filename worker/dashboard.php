@@ -101,7 +101,7 @@ if ($next_holiday) {
 
 // Worker details
 $worker = null;
-$photoPath = 'https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/v1/default-avatar.png';
+$photoPath = '../admin/assets/default-avatar.png';
 if ($auto_db && $worker_id) {
     $stmt = $conn->prepare("SELECT * FROM workers WHERE id = ? LIMIT 1");
     if ($stmt) {
@@ -113,10 +113,7 @@ if ($auto_db && $worker_id) {
     }
     if ($worker && !empty($worker['photo'])) {
         $photo = $worker['photo'];
-        // Always use Cloudinary URL from DB
-        if (preg_match('#^https?://#', $photo)) {
-            $photoPath = $photo;
-        }
+        $photoPath = '../admin/' . (strpos($photo, 'uploads/') === 0 ? $photo : 'uploads/' . $photo);
     }
 }
 

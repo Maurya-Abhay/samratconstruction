@@ -146,7 +146,7 @@ while ($row = $res->fetch_assoc()) {
             
             <div class="col-md-4">
                 <h6 class="mb-2">
-                    <i class="bi bi-building me-2"></i>Samrat Construction
+                    <i class="bi bi-building me-2"></i>JP Construction
                 </h6>
                 <p class="mb-1 small">
                     <i class="bi bi-geo-alt-fill me-1"></i><a href="https://maps.google.com/?q=[Your%20Office%20Address%20Here]" target="_blank" class="text-white"><?= htmlspecialchars($footer_settings['office_address'] ?? 'Nagra, Saran, Bihar') ?></a>
@@ -155,7 +155,7 @@ while ($row = $res->fetch_assoc()) {
                     <i class="bi bi-envelope me-1"></i><a href="mailto:info@samratconstruction.com" class="text-white"><?= htmlspecialchars($footer_settings['contact_email'] ?? 'abhayprasad.maurya@gmail.com') ?></a>
                 </p>
                 <p class="mb-1 small">
-                    <i class="bi bi-telephone me-1"></i><a href="tel:+911234567890" class="text-white"><?= htmlspecialchars($footer_settings['contact_phone'] ?? '+91 9661329757') ?></a>
+                    <i class="bi bi-telephone me-1"></i><a href="tel:+911234567890" class="text-white"><?= htmlspecialchars($footer_settings['contact_phone'] ?? '+91 0000000000') ?></a>
                 </p>
                 <?php if (!empty($footer_settings['app_download_url'])): ?>
                 <a href="<?= htmlspecialchars($footer_settings['app_download_url']) ?>" class="btn btn-outline-info rounded-pill px-4 mt-2" target="_blank">
@@ -201,7 +201,7 @@ while ($row = $res->fetch_assoc()) {
                     </a>
                 </div>
                     <div>
-                        <small class="fw-bold d-block text-white">&copy; <?= date('Y') ?> Samrat Construction Pvt. Ltd.</small>
+                        <small class="fw-bold d-block text-white">&copy; <?= date('Y') ?> JP Construction</small>
                         <small class="text-muted">
                             <span id="footerLiveTime"></span>
                         </small>

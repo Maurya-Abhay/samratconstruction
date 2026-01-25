@@ -28,19 +28,13 @@ if (!$worker) {
 
 // Determine initial photo path
 $photoPath = $worker['photo'] ?? '';
-if (!empty($photoPath) && strpos($photoPath, 'http') === false) {
-    // If photo is still a local path (not Cloudinary URL), prepend admin path
+if (!empty($photoPath)) {
+    // Always use local uploads path
     $photoPath = '../admin/' . (strpos($photoPath, 'uploads/') === 0 ? $photoPath : 'uploads/' . $photoPath);
 }
 
-
-// --- Cloudinary Photo Upload Logic (Must be handled before fetching data for display) ---
-// Assuming the form method for photo upload is POST and the input name is 'photo'
-// Since this is a detail page, we assume a separate form/logic might be needed,
-// but based on your fragmented code, I'm placing the logic here for security.
-
+// --- Local Photo Upload Logic ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
-    
     $allowed = ['image/jpeg','image/jpg','image/png','image/webp','image/gif'];
     $tmp = $_FILES['photo']['tmp_name'];
     $type = $_FILES['photo']['type'];
@@ -53,24 +47,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['photo']) && $_FILES[
     } elseif ($size > 2*1024*1024) {
         $error = 'File size must be less than 2MB.';
     } else {
-        // Assuming upload_to_cloudinary() function exists and is defined in lib_common.php
-        $cloud_url = upload_to_cloudinary($tmp, 'worker_photos');
-        
-        if ($cloud_url) {
-            // Update worker photo in DB
-            $stmt = $conn->prepare("UPDATE workers SET photo=? WHERE id=?");
-            $stmt->bind_param('si', $cloud_url, $worker_id);
-            if ($stmt->execute()) {
-                $success = 'Photo uploaded securely to Cloudinary!';
-                $photoPath = $cloud_url; // Update path for immediate display
-                $worker['photo'] = $cloud_url; // Update worker array
-            } else {
-                $error = 'Failed to update photo in database.';
+            $upload_dir = __DIR__ . '/../admin/uploads/';
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0777, true);
             }
-            $stmt->close();
-        } else {
-            $error = 'Cloudinary upload failed. Check the connection or API settings.';
-        }
+            $ext = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+            $file_name = 'worker_' . $worker_id . '_' . time() . '.' . $ext;
+            $target_path = $upload_dir . $file_name;
+            if (move_uploaded_file($tmp, $target_path)) {
+                $success = 'Photo uploaded successfully!';
+                // Update DB with new path if needed
+                $stmt = $conn->prepare("UPDATE workers SET photo=? WHERE id=?");
+                $stmt->bind_param('si', $target_path, $worker_id);
+                if ($stmt->execute()) {
+                    $photoPath = $target_path; // Update path for immediate display
+                    $worker['photo'] = $target_path; // Update worker array
+                } else {
+                    $error = 'Failed to update photo in database.';
+                }
+                $stmt->close();
+            } else {
+                $error = 'Error uploading photo to server.';
+            }
     }
 }
 
