@@ -11,7 +11,7 @@ if (!isset($_SESSION['attendance_id'])) { header('Location: login.php'); exit; }
 .footer-time { color: #222; font-weight: 500; margin-left: 12px; }
 </style>
 <div class="footer-bar">
-    <span class="footer-text">© 2025 Samrat Construction.</span>
+    <span class="footer-text">© 2026 JP Construction.</span>
     <span class="footer-time">| <?= date('h:i A') ?> IST</span>
 </div>
 
