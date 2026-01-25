@@ -30,25 +30,24 @@
 		<lastmod>2026-01-25</lastmod>
 		<priority>0.6</priority>
 	</url>
-</urlset>
-	<url>
-		<loc>https://smrtbuild.great-site.net/contact/login.php</loc>
-		<lastmod>2026-01-25</lastmod>
-		<priority>0.5</priority>
-	</url>
-	<url>
-		<loc>https://smrtbuild.great-site.net/worker/login.php</loc>
-		<lastmod>2026-01-25</lastmod>
-		<priority>0.5</priority>
-	</url>
-	<url>
-		<loc>https://smrtbuild.great-site.net/attendence/login.php</loc>
-		<lastmod>2026-01-25</lastmod>
-		<priority>0.5</priority>
-	</url>
-	<url>
-		<loc>https://smrtbuild.great-site.net/admin/index.php</loc>
-		<lastmod>2026-01-25</lastmod>
-		<priority>0.5</priority>
-	</url>
-</urlset>
+		<url>
+			<loc>https://smrtbuild.great-site.net/contact/login.php</loc>
+			<lastmod>2026-01-25</lastmod>
+			<priority>0.5</priority>
+		</url>
+		<url>
+			<loc>https://smrtbuild.great-site.net/worker/login.php</loc>
+			<lastmod>2026-01-25</lastmod>
+			<priority>0.5</priority>
+		</url>
+		<url>
+			<loc>https://smrtbuild.great-site.net/attendence/login.php</loc>
+			<lastmod>2026-01-25</lastmod>
+			<priority>0.5</priority>
+		</url>
+		<url>
+			<loc>https://smrtbuild.great-site.net/admin/index.php</loc>
+			<lastmod>2026-01-25</lastmod>
+			<priority>0.5</priority>
+		</url>
+	</urlset>
