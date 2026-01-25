@@ -1,5 +1,10 @@
 <?php
 // attendence_login.php
+// --- Prevent Browser Caching ---
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
 require_once "../admin/lib_common.php";
 
 // --- Session Handling ---
@@ -38,7 +43,7 @@ $attempts[$ip] = array_filter($attempts[$ip], function($ts) use ($now) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if (count($attempts[$ip]) >= $LOGIN_ATTEMPT_LIMIT) {
-        $popup = ['type' => 'error', 'message' => 'Too many login attempts. Please wait 15 minutes.'];
+        $popup = ['type' => 'error', 'message' => 'System Locked: Too many attempts. Wait 15m.'];
     } else {
         // Log this attempt
         $attempts[$ip][] = $now;
@@ -48,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password   = trim($_POST['password'] ?? '');
 
         if ($identifier === '' || $password === '') {
-            $popup = ['type' => 'error', 'message' => 'Please enter both email/phone and password.'];
+            $popup = ['type' => 'error', 'message' => 'Credentials required.'];
         } else {
             // Database Check
             if ($stmt = $conn->prepare("SELECT * FROM attendence_users WHERE email = ? OR phone = ? LIMIT 1")) {
@@ -60,12 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (password_verify($password, $user['password'])) {
                         $_SESSION['attendence_email'] = $user['email'];
                         $_SESSION['attendance_id'] = $user['id'];
-                        $popup = ['type' => 'success', 'message' => 'Login successful! Redirecting...'];
+                        $popup = ['type' => 'success', 'message' => 'Identity Verified. Logging in...'];
                     } else {
-                        $popup = ['type' => 'error', 'message' => 'Incorrect password.'];
+                        $popup = ['type' => 'error', 'message' => 'Authentication Failed: Invalid Password.'];
                     }
                 } else {
-                    $popup = ['type' => 'error', 'message' => 'Account not found.'];
+                    $popup = ['type' => 'error', 'message' => 'User identity not found in database.'];
                 }
                 $stmt->close();
             } else {
@@ -83,158 +88,301 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Attendance Login | JP Construction</title>
+    <title>Staff Portal | JP Construction</title>
+    
     <link rel="icon" href="../admin/assets/jp_construction_logo.webp" type="image/webp">
     <link rel="manifest" href="/abhay/manifest.json" />
-    <meta name="theme-color" content="#0d6efd" />
+    <meta name="theme-color" content="#0f172a" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         :root {
-            --primary-color: #0d6efd;
-            --primary-hover: #0b5ed7;
-            --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            --bg-dark: #0f172a;       /* Deep Navy */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent: #0ea5e9;        /* Sky Blue for Staff/Attendance */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--bg-gradient);
-            min-height: 100vh;
+            background-color: var(--bg-dark);
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            overflow: hidden;
             margin: 0;
+            position: relative;
         }
 
-        .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 360px;
-            margin: auto;
-        }
-
-        .card-header-custom {
-            text-align: center;
-            padding: 25px 20px 5px;
-        }
-
-        .logo-img {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-            margin-bottom: 8px;
-        }
-
-        .card-body-custom {
-            padding: 15px 25px 30px;
-        }
-
-        .form-floating > .form-control {
-            border-radius: 10px;
-            height: 50px;
-        }
-
-        .password-toggle {
+        /* --- AMBIENT BACKGROUND ANIMATION --- */
+        .ambient-orb {
             position: absolute;
-            right: 15px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            z-index: 0;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+        .orb-1 {
+            width: 350px; height: 350px;
+            background: #0ea5e9; /* Sky Blue */
+            top: -50px; left: -50px;
+        }
+        .orb-2 {
+            width: 300px; height: 300px;
+            background: #6366f1; /* Indigo */
+            bottom: -50px; right: -50px;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 50px) scale(1.1); }
+        }
+
+        /* --- GRID OVERLAY --- */
+        .grid-overlay {
+            position: absolute;
+            width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* --- LOGIN CARD --- */
+        .login-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        .logo-container {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .logo-img { width: 50px; height: 50px; object-fit: contain; }
+
+        .brand-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-subtitle {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* --- MODERN INPUTS --- */
+        .input-group-custom {
+            position: relative;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 16px 16px 16px 45px;
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-control-custom:focus {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
             top: 50%;
             transform: translateY(-50%);
+            color: var(--text-muted);
+            transition: 0.3s;
+            pointer-events: none;
+        }
+
+        .form-control-custom:focus + .input-icon { color: var(--accent); }
+
+        /* Password Toggle */
+        .pwd-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
             cursor: pointer;
-            color: #6c757d;
-            z-index: 5;
             background: none;
             border: none;
+            padding: 0;
+            transition: 0.3s;
         }
+        .pwd-toggle:hover { color: white; }
 
-        .btn-primary-custom {
-            background: var(--primary-color);
-            border: none;
-            border-radius: 10px;
-            padding: 12px;
-            font-weight: 600;
+        /* --- BUTTON --- */
+        .btn-submit {
             width: 100%;
-            margin-top: 10px;
+            background: linear-gradient(135deg, var(--accent) 0%, #0284c7 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(14, 165, 233, 0.2);
         }
 
-        .divider {
-            margin: 20px 0 15px;
-            border-top: 1px solid #e9ecef;
-            position: relative;
-            text-align: center;
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(14, 165, 233, 0.3);
+            filter: brightness(1.1);
         }
 
-        .divider span {
-            background: #fff;
-            padding: 0 8px;
-            color: #adb5bd;
-            font-size: 11px;
-            position: relative;
-            top: -10px;
+        /* --- FOOTER --- */
+        .footer-links {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
         }
+
+        .footer-links span { color: var(--text-muted); opacity: 0.7; }
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .footer-links a:hover { color: var(--accent); }
+
+        .back-link {
+            display: block;
+            margin-top: 30px;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .back-link:hover { color: white; }
+
+        /* SweetAlert Overrides */
+        div:where(.swal2-container) h2:where(.swal2-title) { font-family: 'Outfit', sans-serif !important; }
+        div:where(.swal2-popup) { background: #1e293b !important; color: white !important; border: 1px solid #334155; }
     </style>
 </head>
 <body>
 
-    <div class="login-card">
-        <div class="card-header-custom">
-            <img src="../admin/assets/jp_construction_logo.webp" alt="Logo" class="logo-img">
-            <h5 class="fw-bold text-dark mb-0">Welcome Back</h5>
-            <p class="text-muted small">Attendance Login</p>
-        </div>
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="grid-overlay"></div>
 
-        <div class="card-body-custom">
+    <div class="login-wrapper">
+        <div class="glass-card">
+            
+            <div class="logo-container">
+                <img src="../admin/assets/jp_construction_logo.webp" alt="JP" class="logo-img">
+            </div>
+            
+            <h2 class="brand-title">Welcome Back</h2>
+            <p class="brand-subtitle">Attendance System Access</p>
+
             <form method="POST" autocomplete="off">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="identifier" name="identifier" 
-                           placeholder="Email or Phone" 
+                <div class="input-group-custom">
+                    <input type="text" class="form-control-custom" id="identifier" name="identifier" 
+                           placeholder="Email or Phone Number" 
                            value="<?= htmlspecialchars($_POST['identifier'] ?? '', ENT_QUOTES); ?>" required>
-                    <label for="identifier">Email or Phone</label>
+                    <i class="fa-solid fa-user-clock input-icon"></i>
                 </div>
 
-                <div class="position-relative mb-2">
-                    <div class="form-floating">
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-                        <label for="password">Password</label>
-                    </div>
-                    <button type="button" class="password-toggle" id="togglePwd" tabindex="-1">
-                        <i class="bi bi-eye-slash" id="eyeIcon"></i>
+                <div class="input-group-custom">
+                    <input type="password" class="form-control-custom" id="password" name="password" 
+                           placeholder="Enter Password" required>
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    
+                    <button type="button" class="pwd-toggle" id="togglePwd" tabindex="-1">
+                        <i class="fa-regular fa-eye-slash" id="eyeIcon"></i>
                     </button>
                 </div>
 
-                <div class="d-flex justify-content-between mb-3 small">
-                    <span class="text-muted">Staff Access</span>
-                    <a href="forgot_password.php" class="text-decoration-none">Forgot Password?</a>
-                </div>
+                <button type="submit" class="btn-submit">
+                    Check In <i class="fa-solid fa-arrow-right-to-bracket ms-2"></i>
+                </button>
 
-                <button type="submit" class="btn btn-primary-custom text-white">Login</button>
-
-                <div class="divider">
+                <div class="footer-links">
                     <span>Samrat Construction</span>
-                </div>
-                
-                <div class="text-center">
-                    <a href="../index.php" class="text-decoration-none small text-muted">
-                        <i class="bi bi-arrow-left me-1"></i> Home
-                    </a>
+                    <a href="forgot_password.php">Forgot Password?</a>
                 </div>
             </form>
+
+            <a href="../index.php" class="back-link">
+                <i class="fa-solid fa-house me-1"></i> Back to Home
+            </a>
+
         </div>
     </div>
 
     <script>
-        // --- SweetAlert Feedback ---
+        // --- SweetAlert Logic ---
         <?php if ($popup): ?>
             Swal.fire({
                 icon: '<?= $popup['type'] ?>',
@@ -242,8 +390,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 toast: true,
                 position: 'top',
                 showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true
+                timer: 2500,
+                timerProgressBar: true,
+                background: '#1e293b',
+                color: '#fff',
+                iconColor: '<?= $popup['type'] == "success" ? "#10b981" : "#ef4444" ?>'
             }).then(() => {
                 <?php if ($popup['type'] === 'success'): ?>
                     window.location.href = 'dashboard.php';
@@ -255,13 +406,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         document.getElementById('togglePwd').addEventListener('click', function() {
             const passInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eyeIcon');
-            const isPass = passInput.type === 'password';
-            passInput.type = isPass ? 'text' : 'password';
-            eyeIcon.classList.toggle('bi-eye-slash', !isPass);
-            eyeIcon.classList.toggle('bi-eye', isPass);
+            
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            } else {
+                passInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            }
         });
 
-        // --- Service Worker ---
+        // --- Service Worker (Kept original logic) ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/abhay/service-worker.js').catch(() => {});

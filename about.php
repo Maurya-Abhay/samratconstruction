@@ -6,276 +6,254 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="admin/assets/jp_construction_logo.webp" type="image/webp">
     <title>About Us | JP Construction</title>
-    <meta name="description" content="Learn about JP Construction, our experienced team, our mission, and our commitment to quality construction and interior design services in India.">
-    <meta name="keywords" content="About JP Construction, construction company, interior design, team, mission, India, building experts">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://jpconstruction.in/about.php">
-    <meta name="theme-color" content="#0d6efd">
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="About Us | JP Construction">
-    <meta property="og:description" content="Learn about JP Construction, our experienced team, our mission, and our commitment to quality construction and interior design services in India.">
-    <meta property="og:url" content="https://jpconstruction.in/about.php">
-    <meta property="og:image" content="https://jpconstruction.in/admin/assets/jp_construction_logo.webp">
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="About Us | JP Construction">
-    <meta name="twitter:description" content="Learn about JP Construction, our experienced team, our mission, and our commitment to quality construction and interior design services in India.">
-    <meta name="twitter:image" content="https://jpconstruction.in/admin/assets/jp_construction_logo.webp">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <meta name="description" content="Building legacies since 2015. Learn about JP Construction's mission, vision, and expert team.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;700&family=Oswald:wght@300;400;600;700&family=Reenie+Beanie&display=swap" rel="stylesheet">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <style>
         :root {
-            --brand-purple: #8245ec;
-            --brand-dark: #1a1a1a;
-            --text-gray: #636e72;
-            --soft-bg: #f8faff;
+            /* Consistent Brand Colors */
+            --primary: #0b1c2c; /* Deep Navy */
+            --accent: #ff9f1c;  /* Construction Amber */
+            --light: #f4f7f6;
+            --text-dark: #1a1a1a;
+            --text-gray: #6c757d;
+            
+            --font-head: 'Oswald', sans-serif;
+            --font-body: 'Manrope', sans-serif;
+            --font-sig: 'Reenie Beanie', cursive;
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: var(--font-body);
+            color: var(--text-dark);
             background-color: #fff;
-            color: var(--brand-dark);
+            overflow-x: hidden;
         }
 
-        /* --- Hero Section --- */
-        .hero-about {
-            background: linear-gradient(rgba(26, 26, 26, 0.8), rgba(26, 26, 26, 0.8)), 
-                        url('admin/assets/jp_hero.webp') no-repeat center center/cover;
-            height: 550px;
+        h1, h2, h3, h4, h5 { font-family: var(--font-head); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- Global Components --- */
+        .text-accent { color: var(--accent) !important; }
+        .bg-primary-dark { background-color: var(--primary); }
+        .line-accent { width: 60px; height: 4px; background: var(--accent); margin-bottom: 20px; display: inline-block; }
+        
+        .btn-outline-custom {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-weight: 700;
+            padding: 12px 30px;
+            border-radius: 0;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+        .btn-outline-custom:hover { background: var(--primary); color: white; }
+
+        /* --- Hero Section (Parallax) --- */
+        .page-hero {
+            background: linear-gradient(rgba(11, 28, 44, 0.85), rgba(11, 28, 44, 0.7)), url('admin/assets/jp_hero.webp');
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+            height: 60vh;
+            min-height: 400px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
             text-align: center;
-            clip-path: ellipse(150% 100% at 50% 0%);
-        }
-
-        .hero-about h1 {
-            font-weight: 800;
-            font-size: 3.5rem;
-            letter-spacing: -1px;
-        }
-
-        /* --- Content Styling --- */
-        .section-padding { padding: 100px 0; }
-
-        .about-image-wrapper {
+            color: white;
             position: relative;
-            padding: 20px;
+        }
+        .page-hero::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 50px;
+            background: linear-gradient(to top, #ffffff, transparent);
         }
 
-        .about-image-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 80%;
-            height: 80%;
-            border: 10px solid var(--brand-purple);
-            z-index: -1;
-            border-radius: 20px;
-            opacity: 0.15;
+        /* --- About Story Section --- */
+        .about-story { padding: 80px 0; }
+        .img-stack { position: relative; padding-bottom: 40px; }
+        .img-main { width: 90%; border-radius: 4px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .img-secondary {
+            position: absolute; bottom: 0; right: 0; width: 55%;
+            border: 8px solid #fff; border-radius: 4px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
         }
-
-        .main-img {
-            border-radius: 20px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
-            transition: transform 0.4s ease;
-        }
-
-        .main-img:hover { transform: translateY(-10px); }
-
-        .experience-badge {
-            position: absolute;
-            bottom: -20px;
-            right: 0;
-            background: var(--brand-purple);
-            color: #fff;
-            padding: 25px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 15px 30px rgba(130, 69, 236, 0.3);
-        }
-
-        /* --- Feature Cards --- */
-        .feature-box {
-            background: var(--soft-bg);
-            padding: 40px;
-            border-radius: 24px;
-            border: 1px solid rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-            height: 100%;
-        }
-
-        .feature-box:hover {
-            background: #fff;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
-            border-color: var(--brand-purple);
-        }
-
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 15px;
-            font-size: 1.5rem;
-            color: var(--brand-purple);
-            margin-bottom: 25px;
-            box-shadow: 0 10px 20px rgba(130, 69, 236, 0.1);
-        }
-
-        /* --- Stats Bar --- */
-        .stats-wrapper {
-            background: var(--brand-dark);
-            border-radius: 30px;
-            padding: 60px 20px;
-            margin-top: -80px;
-            position: relative;
+        .exp-badge {
+            position: absolute; top: 30px; left: -20px;
+            background: var(--accent); color: var(--primary);
+            padding: 20px 25px; font-weight: bold; font-family: var(--font-head);
+            box-shadow: 0 10px 20px rgba(255, 159, 28, 0.3);
             z-index: 10;
         }
-
-        .stat-item h2 {
-            font-weight: 800;
-            color: var(--brand-purple);
-            font-size: 2.8rem;
-            margin-bottom: 5px;
+        .exp-badge span { display: block; font-size: 2.5rem; line-height: 1; }
+        
+        .check-list li {
+            margin-bottom: 15px; display: flex; align-items: center;
+            font-weight: 600; color: var(--text-dark);
         }
-
-        .stat-item p {
-            color: #a0a0a0;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            margin-bottom: 0;
+        .check-list i {
+            color: var(--accent); background: rgba(11, 28, 44, 0.05);
+            width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; margin-right: 15px; font-size: 0.9rem;
         }
+        
+        .signature { font-family: var(--font-sig); font-size: 2.5rem; color: var(--text-gray); margin-top: 20px; }
 
-        .highlight-check {
-            list-style: none;
-            padding: 0;
-        }
+        /* --- Stats Section --- */
+        .stats-strip { background: var(--light); padding: 60px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
+        .stat-box h2 { font-size: 3rem; color: var(--primary); margin-bottom: 0; }
+        .stat-box p { font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-gray); font-weight: 700; }
 
-        .highlight-check li {
-            margin-bottom: 15px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
+        /* --- Vision/Mission (Dark) --- */
+        .vision-section { background: var(--primary); color: white; padding: 100px 0; position: relative; overflow: hidden; }
+        .vision-bg-text {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 15vw; opacity: 0.03; font-weight: 700; font-family: var(--font-head); white-space: nowrap; pointer-events: none;
         }
-
-        .highlight-check li i {
-            color: #00b894;
-            margin-right: 12px;
-            font-size: 1.2rem;
+        .value-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 40px;
+            transition: all 0.4s ease;
+            height: 100%;
         }
-
-        @media (max-width: 768px) {
-            .hero-about h1 { font-size: 2.2rem; }
-            .section-padding { padding: 60px 0; }
-        }
+        .value-card:hover { background: var(--accent); transform: translateY(-10px); }
+        .value-card:hover * { color: var(--primary) !important; }
+        .value-icon { font-size: 2.5rem; color: var(--accent); margin-bottom: 20px; transition: 0.3s; }
+        
+        /* --- CTA --- */
+        .cta-strip { background: var(--accent); padding: 50px 0; }
     </style>
 </head>
 <body>
 
     <?php include "header.php"; ?>
 
-    <div class="hero-about">
-        <div class="container">
-            <span class="badge bg-primary px-3 py-2 rounded-pill mb-3">WHO WE ARE</span>
-            <h1>Architects of the Future</h1>
-            <p class="lead text-white-50">Transforming visions into concrete reality since 2015.</p>
+    <header class="page-hero">
+        <div class="container" data-aos="fade-up">
+            <span class="text-uppercase letter-spacing-2 fw-bold text-accent mb-2 d-block">Est. 2015</span>
+            <h1 class="display-3 fw-bold text-white">More Than Just Builders</h1>
+            <p class="lead opacity-75 mx-auto" style="max-width: 600px;">We are architects of the future, crafting spaces that define the skyline.</p>
         </div>
-    </div>
+    </header>
 
-    <div class="container">
-        <div class="stats-wrapper text-center">
-            <div class="row g-4">
-                <div class="col-6 col-md-3 stat-item">
-                    <h2>10+</h2>
-                    <p>Years in Industry</p>
+    <section class="about-story">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0" data-aos="fade-right">
+                    <div class="img-stack">
+                        <div class="exp-badge">
+                            <span>10+</span> Years Exp.
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&q=80&w=1000" alt="Construction Site" class="img-main">
+                        <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&q=80&w=600" alt="Blueprint" class="img-secondary">
+                    </div>
                 </div>
-                <div class="col-6 col-md-3 stat-item">
-                    <h2>250+</h2>
-                    <p>Projects Delivered</p>
-                </div>
-                <div class="col-6 col-md-3 stat-item">
-                    <h2>500+</h2>
-                    <p>Experts Team</p>
-                </div>
-                <div class="col-6 col-md-3 stat-item">
-                    <h2>99%</h2>
-                    <p>Happy Clients</p>
+                
+                <div class="col-lg-6 ps-lg-5" data-aos="fade-left">
+                    <span class="text-accent fw-bold text-uppercase ls-1">Who We Are</span>
+                    <h2 class="display-5 fw-bold mb-4 text-dark">Building with Precision,<br>Delivering with Pride.</h2>
+                    <div class="line-accent"></div>
+                    
+                    <p class="text-muted mb-4">
+                        JP Construction was founded on a simple premise: <strong>Quality without compromise</strong>. From humble residential beginnings to complex commercial infrastructures, our journey has been defined by engineering excellence and unwavering integrity.
+                    </p>
+                    <p class="text-muted mb-4">
+                        We don't just pour concrete; we build relationships. Our team of certified engineers and architects works tirelessly to ensure every project is sustainable, safe, and stunning.
+                    </p>
+
+                    <ul class="list-unstyled check-list">
+                        <li><i class="bi bi-check-lg"></i> ISO Certified Safety Standards</li>
+                        <li><i class="bi bi-check-lg"></i> Transparent Costing & Timelines</li>
+                        <li><i class="bi bi-check-lg"></i> Sustainable & Eco-friendly Materials</li>
+                    </ul>
+
+                    <div class="signature">jitendra Prasad</div>
+                    <small class="text-uppercase fw-bold text-muted">Founder & CEO</small>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <section class="section-padding">
+    <section class="stats-strip">
         <div class="container">
-            <div class="row g-5 align-items-center">
-                <div class="col-lg-6">
-                    <div class="about-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&q=80&w=1000" class="img-fluid main-img" alt="Work Site">
-                        <div class="experience-badge d-none d-md-block">
-                            <h3 class="mb-0 fw-bold">10+</h3>
-                            <small>Years Of Journey</small>
-                        </div>
+            <div class="row text-center g-4">
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="0">
+                    <div class="stat-box">
+                        <h2>250+</h2>
+                        <p>Projects</p>
                     </div>
                 </div>
-                <div class="col-lg-6 ps-lg-5">
-                    <h6 class="text-primary fw-bold text-uppercase mb-3">About JP Construction</h6>
-                    <h2 class="display-5 fw-bold mb-4">Crafting Structures That Stand the Test of Time</h2>
-                    <p class="text-muted mb-4">
-                        At JP Construction Works, we don't just build walls; we build legacies. Our approach combines traditional craftsmanship with modern technology to ensure every project is a masterpiece of safety and design.
-                    </p>
-                    
-                    <ul class="highlight-check mb-5">
-                        <li><i class="bi bi-patch-check-fill"></i> Real Time Certified Standards</li>
-                        <li><i class="bi bi-patch-check-fill"></i> Eco-Friendly Sustainable Materials</li>
-                        <li><i class="bi bi-patch-check-fill"></i> Real-time Project Tracking for Clients</li>
-                    </ul>
-
-                    <div class="d-flex gap-3">
-                        <a href="contact.php" class="btn btn-primary btn-lg rounded-pill px-4 py-3">Start a Project</a>
-                        <a href="services-static.php" class="btn btn-outline-dark btn-lg rounded-pill px-4 py-3">Our Services</a>
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-box">
+                        <h2>50+</h2>
+                        <p>Team Members</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-box">
+                        <h2>12</h2>
+                        <p>Districts Covered</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-box">
+                        <h2>100%</h2>
+                        <p>Satisfaction</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="section-padding bg-light">
-        <div class="container text-center mb-5">
-            <h2 class="fw-bold">Our Core Foundation</h2>
-            <p class="text-muted">The principles that guide every brick we lay.</p>
-        </div>
-        <div class="container">
+    <section class="vision-section">
+        <div class="vision-bg-text">VALUES</div>
+        <div class="container position-relative z-1">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h5 class="text-accent">OUR PHILOSOPHY</h5>
+                <h2 class="fw-bold">The Pillars We Stand On</h2>
+            </div>
+
             <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="feature-box">
-                        <div class="feature-icon"><i class="fa-solid fa-bullseye"></i></div>
-                        <h4>Our Mission</h4>
-                        <p class="text-muted small">To deliver high-quality, cost-effective construction projects on schedule while maintaining the highest level of safety.</p>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+                    <div class="value-card">
+                        <i class="bi bi-bullseye value-icon"></i>
+                        <h3 class="h4 mb-3">Our Mission</h3>
+                        <p class="opacity-75">To deliver superior construction solutions that exceed client expectations through innovation, safety, and timely delivery.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="feature-box">
-                        <div class="feature-icon"><i class="fa-solid fa-eye"></i></div>
-                        <h4>Our Vision</h4>
-                        <p class="text-muted small">To be the most trusted construction partner in India, known for innovation, integrity, and sustainable building solutions.</p>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="value-card">
+                        <i class="bi bi-eye value-icon"></i>
+                        <h3 class="h4 mb-3">Our Vision</h3>
+                        <p class="opacity-75">To be the region's most trusted infrastructure partner, recognized for transforming landscapes and improving lives.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="feature-box">
-                        <div class="feature-icon"><i class="fa-solid fa-gem"></i></div>
-                        <h4>Our Values</h4>
-                        <p class="text-muted small">Safety first, absolute transparency, uncompromising quality, and respect for every worker and environment.</p>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="value-card">
+                        <i class="bi bi-gem value-icon"></i>
+                        <h3 class="h4 mb-3">Core Values</h3>
+                        <p class="opacity-75">Integrity in every deal, Quality in every brick, and Respect for every individual involved in the process.</p>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-strip">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8 text-center text-md-start mb-3 mb-md-0">
+                    <h3 class="fw-bold text-primary mb-0">Have a vision in mind? Let's build it.</h3>
+                </div>
+                <div class="col-md-4 text-center text-md-end">
+                    <a href="contact.php" class="btn btn-dark rounded-0 py-3 px-5 fw-bold">CONTACT US</a>
                 </div>
             </div>
         </div>
@@ -284,5 +262,9 @@
     <?php include "footer.php"; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+    </script>
 </body>
 </html>

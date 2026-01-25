@@ -1,6 +1,5 @@
 <?php
-// service-detail.php - Modern Service Detail Page
-
+// service-detail.php - Next-Gen Industrial Design
 session_start();
 include "admin/database.php";
 
@@ -17,9 +16,10 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
-    echo "<div style='height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; font-family:sans-serif; background:#f8fafc;'>
-            <h2 style='color:#1e293b; margin-bottom:20px;'>Service Not Found</h2>
-            <a href='services.php' style='padding:10px 20px; background:#2563eb; color:white; text-decoration:none; border-radius:50px; font-weight:bold;'>Back to Services</a>
+    echo "<div style='height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; font-family:sans-serif; background:#f4f7f6; color:#0b1c2c;'>
+            <h1 style='font-size:3rem; margin-bottom:10px;'>404</h1>
+            <h3 style='margin-bottom:20px; text-transform:uppercase;'>Service Not Found</h3>
+            <a href='services.php' style='padding:12px 30px; background:#ff9f1c; color:#0b1c2c; text-decoration:none; font-weight:bold; text-transform:uppercase; letter-spacing:1px;'>Return to Services</a>
           </div>";
     exit;
 }
@@ -32,277 +32,284 @@ $service = $result->fetch_assoc();
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><?= htmlspecialchars($service['service_name']) ?> | Samrat Construction</title>
+    <title><?= htmlspecialchars($service['service_name']) ?> | JP Construction</title>
     <link rel="icon" href="admin/assets/jp_construction_logo.webp" type="image/webp">
 
-    <!-- Fonts: Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- CSS Libs -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
-    <!-- AOS Animation -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <style>
         :root {
-            --primary: #2563eb;
-            --secondary: #0f172a;
-            --accent: #3b82f6;
-            --light-bg: #f8fafc;
-            --text-main: #334155;
-            --text-light: #64748b;
-            --card-shadow: 0 20px 40px -5px rgba(0,0,0,0.1);
-            --font-head: 'Outfit', sans-serif;
-            --font-body: 'Inter', sans-serif;
+            --primary: #0b1c2c;       /* Deep Navy */
+            --accent: #ff9f1c;        /* Amber */
+            --bg-light: #f4f7f6;      /* Industrial Light Gray */
+            --text-body: #4a5568;     /* Slate Gray */
+            --text-head: #0b1c2c;     /* Dark Navy */
+            --card-shadow: 0 20px 50px rgba(11, 28, 44, 0.1);
+            
+            --font-head: 'Oswald', sans-serif;
+            --font-body: 'Manrope', sans-serif;
         }
 
         body {
             font-family: var(--font-body);
-            background-color: var(--light-bg);
-            color: var(--text-main);
+            background-color: var(--bg-light);
+            color: var(--text-body);
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); }
+        h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); color: var(--text-head); text-transform: uppercase; }
 
         /* --- HERO HEADER --- */
         .service-hero {
             position: relative;
-            height: 50vh;
-            min-height: 400px;
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
-            color: white;
+            height: 60vh;
+            min-height: 500px;
+            background-color: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             overflow: hidden;
-            border-bottom-left-radius: 50px;
-            border-bottom-right-radius: 50px;
-            margin-bottom: -100px; /* Overlap effect */
-            padding-bottom: 50px;
+            margin-bottom: -120px; /* Overlap Effect */
+            padding-bottom: 80px;
+        }
+
+        .hero-bg-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(11, 28, 44, 0.8), rgba(11, 28, 44, 0.9));
+            z-index: 1;
         }
 
         .hero-bg-img {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover;
-            opacity: 0.3;
-            filter: blur(3px);
+            z-index: 0;
+            filter: grayscale(100%) contrast(1.2);
+            opacity: 0.4;
+            transform: scale(1.1);
         }
 
-        .hero-content { z-index: 2; position: relative; max-width: 800px; padding: 20px; }
-        
-        .service-badge {
-            display: inline-block;
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        .hero-content { 
+            z-index: 2; 
+            position: relative; 
+            max-width: 900px; 
+            padding: 20px; 
+            color: white;
+        }
+
+        .hero-badge {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 5px 15px;
+            font-family: var(--font-head);
             font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: inline-block;
             margin-bottom: 20px;
         }
 
         .hero-title {
-            font-size: 3.5rem;
-            font-weight: 800;
+            font-size: 4rem;
+            font-weight: 700;
             margin-bottom: 1rem;
-            text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            color: #ffffff;
+            letter-spacing: 1px;
         }
 
-        /* --- MAIN CONTENT CARD --- */
+        .breadcrumb-item a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; }
+        .breadcrumb-item.active { color: var(--accent); }
+        .breadcrumb-item+.breadcrumb-item::before { color: rgba(255,255,255,0.4); }
+
+        /* --- MAIN CONTENT LAYOUT --- */
         .content-wrapper {
-            padding: 0 20px;
             position: relative;
             z-index: 10;
+            padding-bottom: 80px;
         }
 
+        /* Left Column Styles */
         .main-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 32px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            background: #ffffff;
             box-shadow: var(--card-shadow);
-            overflow: hidden;
             padding: 0;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
+            border-top: 5px solid var(--accent);
         }
 
-        /* Image Gallery Section */
-        .service-gallery {
-            height: 450px;
-            position: relative;
+        .service-image-box {
+            height: 400px;
+            width: 100%;
             overflow: hidden;
-            border-bottom: 1px solid #eee;
+            position: relative;
         }
+
         .service-main-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 1s ease;
+            transition: transform 0.5s ease;
         }
-        .service-gallery:hover .service-main-img { transform: scale(1.05); }
 
-        /* Content Layout */
-        .card-content { padding: 4rem; }
-        
+        .service-image-box:hover .service-main-img { transform: scale(1.05); }
+
+        .card-body-custom { padding: 50px; }
+
         .section-heading {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--secondary);
+            font-size: 1.8rem;
+            font-weight: 600;
             margin-bottom: 1.5rem;
-            border-left: 5px solid var(--primary);
-            padding-left: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-heading::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 30px;
+            background: var(--accent);
+            margin-right: 15px;
         }
 
-        .text-body-lg { font-size: 1.1rem; line-height: 1.8; color: var(--text-main); margin-bottom: 2rem; }
+        .desc-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-body);
+            margin-bottom: 2rem;
+        }
 
-        /* --- FEATURES GRID --- */
+        /* Features Grid */
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
             margin-bottom: 3rem;
         }
 
         .feature-item {
-            background: #f1f5f9;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             padding: 20px;
-            border-radius: 16px;
             display: flex;
             align-items: center;
             transition: 0.3s;
+            border-left: 3px solid transparent;
         }
+
         .feature-item:hover {
-            background: white;
+            border-left-color: var(--accent);
+            background: #fff;
             box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            transform: translateY(-3px);
-        }
-        .check-icon {
-            width: 32px; height: 32px;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            margin-right: 15px;
-            flex-shrink: 0;
-            font-size: 0.9rem;
-        }
-        .feature-text { font-weight: 600; color: var(--secondary); }
-
-        /* --- PRICING & TAGS --- */
-        .meta-box {
-            background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 3rem;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .price-display {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--primary);
-        }
-        
-        .tag-badge {
-            background: white;
-            border: 1px solid #cbd5e1;
-            color: var(--text-light);
-            padding: 6px 14px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            margin-right: 8px;
-            margin-bottom: 8px;
-            display: inline-block;
+            transform: translateX(5px);
         }
 
-        /* --- TESTIMONIAL --- */
-        .testimonial-card {
-            background: #0f172a;
-            color: white;
-            padding: 40px;
-            border-radius: 20px;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 3rem;
-        }
-        .quote-icon {
-            position: absolute;
-            top: 20px; right: 30px;
-            font-size: 5rem;
-            color: rgba(255,255,255,0.1);
-        }
-        .testimonial-text {
+        .feature-icon {
+            color: var(--accent);
             font-size: 1.2rem;
-            font-style: italic;
-            line-height: 1.6;
-            position: relative;
-            z-index: 2;
+            margin-right: 15px;
         }
+        
+        .feature-text { font-weight: 600; font-family: var(--font-body); color: var(--primary); }
 
-        /* --- FAQ ACCORDION --- */
-        .accordion-item {
-            border: none;
-            margin-bottom: 15px;
-            background: transparent;
-        }
+        /* FAQ Accordion */
+        .accordion-item { border: none; margin-bottom: 10px; background: transparent; }
         .accordion-button {
-            background: white;
-            border-radius: 12px !important;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-            font-weight: 600;
-            color: var(--secondary);
-            padding: 20px;
-            border: 1px solid #f1f5f9;
+            background: #f8fafc;
+            color: var(--primary);
+            font-family: var(--font-head);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            padding: 18px 25px;
+            box-shadow: none !important;
+            border: 1px solid #eee;
         }
         .accordion-button:not(.collapsed) {
-            background: #eff6ff;
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .accordion-button::after { filter: grayscale(100%); }
+        .accordion-button:not(.collapsed)::after { filter: invert(1); }
+        .accordion-body { padding: 25px; background: #fff; border: 1px solid #eee; border-top: none; }
+
+        /* --- SIDEBAR --- */
+        .sidebar-sticky { position: sticky; top: 120px; z-index: 5; }
+
+        .sidebar-widget {
+            background: #ffffff;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border: 1px solid #eee;
+        }
+
+        .price-label { font-size: 0.85rem; text-transform: uppercase; color: #888; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 5px; }
+        .price-value { font-size: 2.2rem; color: var(--primary); font-family: var(--font-head); font-weight: 700; }
+
+        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+        .tag-badge {
+            background: transparent;
+            border: 1px solid #ddd;
+            color: #666;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .tag-badge:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Testimonial Widget */
+        .testimonial-widget {
+            background: var(--primary);
+            color: white;
+            padding: 35px;
+            position: relative;
+        }
+        .quote-icon { font-size: 3rem; color: var(--accent); opacity: 0.3; position: absolute; top: 20px; right: 20px; }
+        .testimonial-text { font-style: italic; opacity: 0.9; margin-bottom: 15px; position: relative; z-index: 2; font-family: var(--font-body); }
+        .client-label { color: var(--accent); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+
+        /* CTA Button */
+        .cta-btn {
+            background: var(--accent);
             color: var(--primary);
-            box-shadow: none;
-        }
-        .accordion-body {
-            padding: 20px;
-            color: var(--text-light);
-            background: white;
-            border-radius: 0 0 12px 12px;
-            margin-top: -10px;
-            padding-top: 30px;
-        }
-
-        /* --- CTA BUTTON --- */
-        .cta-btn-lg {
-            background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%);
-            color: white;
-            padding: 18px 40px;
-            font-size: 1.2rem;
+            width: 100%;
+            padding: 18px;
+            text-align: center;
+            text-transform: uppercase;
             font-weight: 700;
-            border-radius: 50px;
+            letter-spacing: 1px;
             border: none;
-            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
-            transition: all 0.3s;
-            display: inline-flex; align-items: center; gap: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+            text-decoration: none;
+            font-family: var(--font-head);
         }
-        .cta-btn-lg:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.4);
-            color: white;
+        .cta-btn:hover {
+            background: #e68a00;
+            color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 159, 28, 0.3);
         }
 
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 991px) {
             .hero-title { font-size: 2.5rem; }
-            .card-content { padding: 2rem; }
-            .service-gallery { height: 300px; }
-            .meta-box { padding: 20px; }
-            .features-grid { grid-template-columns: 1fr; }
+            .card-body-custom { padding: 30px; }
+            .service-hero { height: auto; padding: 100px 0 150px 0; }
         }
     </style>
 </head>
@@ -311,58 +318,53 @@ $service = $result->fetch_assoc();
 
 <?php include "header.php"; ?>
 
-<!-- 1. HERO SECTION -->
 <div class="service-hero">
+    <div class="hero-bg-overlay"></div>
     <?php if (!empty($service['service_photo'])): ?>
         <img src="admin/uploads/<?= htmlspecialchars($service['service_photo']) ?>" class="hero-bg-img" alt="Background">
     <?php endif; ?>
     
     <div class="hero-content" data-aos="fade-up">
-        <span class="service-badge">Premium Service</span>
+        <span class="hero-badge">Professional Service</span>
         <h1 class="hero-title"><?= htmlspecialchars($service['service_name']) ?></h1>
         
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a href="index.php" class="text-white text-decoration-none opacity-75">Home</a></li>
-                <li class="breadcrumb-item"><a href="services.php" class="text-white text-decoration-none opacity-75">Services</a></li>
-                <li class="breadcrumb-item active text-white" aria-current="page">Details</li>
+                <li class="breadcrumb-item"><a href="index.php">HOME</a></li>
+                <li class="breadcrumb-item"><a href="services.php">SERVICES</a></li>
+                <li class="breadcrumb-item active" aria-current="page">DETAILS</li>
             </ol>
         </nav>
     </div>
 </div>
 
-<!-- 2. MAIN CONTENT -->
 <div class="container content-wrapper">
-    <div class="main-card">
+    <div class="row g-4">
         
-        <!-- Featured Image Gallery -->
-        <?php if (!empty($service['service_photo'])): ?>
-        <div class="service-gallery">
-            <img src="admin/uploads/<?= htmlspecialchars($service['service_photo']) ?>" alt="Service Image" class="service-main-img">
-        </div>
-        <?php endif; ?>
+        <div class="col-lg-8">
+            <div class="main-card">
+                
+                <?php if (!empty($service['service_photo'])): ?>
+                <div class="service-image-box">
+                    <img src="admin/uploads/<?= htmlspecialchars($service['service_photo']) ?>" alt="<?= htmlspecialchars($service['service_name']) ?>" class="service-main-img">
+                </div>
+                <?php endif; ?>
 
-        <div class="card-content">
-            
-            <div class="row g-5">
-                <!-- Left Column: Details -->
-                <div class="col-lg-8">
+                <div class="card-body-custom">
                     
-                    <!-- Description -->
                     <div class="mb-5" data-aos="fade-up">
                         <h3 class="section-heading">Overview</h3>
                         <?php if (!empty($service['short_desc'])): ?>
-                            <p class="lead text-dark fw-medium mb-4"><?= nl2br(htmlspecialchars($service['short_desc'])) ?></p>
+                            <p class="lead fw-bold text-dark mb-4" style="font-family: var(--font-body);"><?= nl2br(htmlspecialchars($service['short_desc'])) ?></p>
                         <?php endif; ?>
                         
                         <?php if (!empty($service['long_desc'])): ?>
-                            <div class="text-body-lg">
+                            <div class="desc-text">
                                 <?= $service['long_desc'] /* Trusted HTML */ ?>
                             </div>
                         <?php endif; ?>
                     </div>
 
-                    <!-- Features Grid -->
                     <?php if (!empty($service['features'])): ?>
                     <div class="mb-5" data-aos="fade-up">
                         <h3 class="section-heading">Key Features</h3>
@@ -371,11 +373,10 @@ $service = $result->fetch_assoc();
                             $features = explode("\n", $service['features']);
                             foreach ($features as $feature): 
                                 if(trim($feature)):
-                                    // Clean up any bullet points user might have added manually
                                     $cleanFeature = trim(str_replace(['-','•','✔️'], '', $feature));
                             ?>
                                 <div class="feature-item">
-                                    <div class="check-icon"><i class="bi bi-check-lg"></i></div>
+                                    <i class="fa-solid fa-check-double feature-icon"></i>
                                     <span class="feature-text"><?= htmlspecialchars($cleanFeature) ?></span>
                                 </div>
                             <?php endif; endforeach; ?>
@@ -383,14 +384,12 @@ $service = $result->fetch_assoc();
                     </div>
                     <?php endif; ?>
 
-                    <!-- FAQ Accordion -->
                     <?php if (!empty($service['faq'])): ?>
-                    <div class="mb-5" data-aos="fade-up">
+                    <div data-aos="fade-up">
                         <h3 class="section-heading">Frequently Asked Questions</h3>
                         <div class="accordion" id="faqAccordion">
                             <?php 
-                            $faqRaw = $service['faq'];
-                            $faqParts = preg_split('/(?=Q:)/', $faqRaw);
+                            $faqParts = preg_split('/(?=Q:)/', $service['faq']);
                             $faqIndex = 0;
                             foreach ($faqParts as $part) {
                                 $part = trim($part);
@@ -418,70 +417,73 @@ $service = $result->fetch_assoc();
                     <?php endif; ?>
 
                 </div>
-
-                <!-- Right Column: Sidebar -->
-                <div class="col-lg-4">
-                    <div class="sticky-top" style="top: 100px; z-index: 5;">
-                        
-                        <!-- Pricing & Meta -->
-                        <div class="meta-box" data-aos="fade-left">
-                            <?php if (!empty($service['pricing'])): ?>
-                                <div class="mb-4">
-                                    <label class="text-uppercase small text-muted fw-bold ls-1">Starting Price</label>
-                                    <div class="price-display"><?= htmlspecialchars($service['pricing']) ?></div>
-                                </div>
-                            <?php endif; ?>
-
-                            <?php if (!empty($service['tags'])): ?>
-                                <div>
-                                    <label class="text-uppercase small text-muted fw-bold ls-1 d-block mb-2">Tags</label>
-                                    <div>
-                                        <?php foreach (explode(',', $service['tags']) as $tag): if (trim($tag)): ?>
-                                            <span class="tag-badge"><?= htmlspecialchars(trim($tag)) ?></span>
-                                        <?php endif; endforeach; ?>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-
-                        <!-- Testimonial -->
-                        <?php if (!empty($service['testimonial'])): ?>
-                        <div class="testimonial-card" data-aos="fade-left" data-aos-delay="100">
-                            <i class="bi bi-quote quote-icon"></i>
-                            <div class="testimonial-text">
-                                "<?= nl2br(htmlspecialchars($service['testimonial'])) ?>"
-                            </div>
-                            <div class="mt-3 text-white-50 small fw-bold text-uppercase ls-1">— Client Feedback</div>
-                        </div>
-                        <?php endif; ?>
-
-                        <!-- CTA Button -->
-                        <?php if (!empty($service['cta_label']) && !empty($service['cta_link'])): ?>
-                        <div class="text-center" data-aos="fade-up" data-aos-delay="200">
-                            <a href="<?= htmlspecialchars($service['cta_link']) ?>" class="cta-btn-lg w-100 justify-content-center">
-                                <?= htmlspecialchars($service['cta_label']) ?> <i class="bi bi-arrow-right-circle"></i>
-                            </a>
-                        </div>
-                        <?php endif; ?>
-
-                    </div>
-                </div>
             </div>
-
         </div>
+
+        <div class="col-lg-4">
+            <div class="sidebar-sticky">
+                
+                <div class="sidebar-widget" data-aos="fade-left">
+                    <?php if (!empty($service['pricing'])): ?>
+                        <div class="mb-4 pb-4 border-bottom">
+                            <span class="price-label">Starting From</span>
+                            <div class="price-value"><?= htmlspecialchars($service['pricing']) ?></div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($service['tags'])): ?>
+                        <div class="mb-4">
+                            <span class="price-label mb-2">Related Tags</span>
+                            <div class="tags-container">
+                                <?php foreach (explode(',', $service['tags']) as $tag): if (trim($tag)): ?>
+                                    <span class="tag-badge"><?= htmlspecialchars(trim($tag)) ?></span>
+                                <?php endif; endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($service['cta_label']) && !empty($service['cta_link'])): ?>
+                        <a href="<?= htmlspecialchars($service['cta_link']) ?>" class="cta-btn">
+                            <?= htmlspecialchars($service['cta_label']) ?> <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    <?php else: ?>
+                        <a href="contact.php" class="cta-btn">
+                            Get a Quote <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    <?php endif; ?>
+                </div>
+
+                <?php if (!empty($service['testimonial'])): ?>
+                <div class="testimonial-widget" data-aos="fade-left" data-aos-delay="100">
+                    <i class="fa-solid fa-quote-right quote-icon"></i>
+                    <p class="testimonial-text">"<?= nl2br(htmlspecialchars($service['testimonial'])) ?>"</p>
+                    <div class="client-label">— Happy Client</div>
+                </div>
+                <?php endif; ?>
+
+                <div class="sidebar-widget mt-4 text-center">
+                    <h4 style="font-size:1.2rem; margin-bottom:15px;">Need Help?</h4>
+                    <p class="small text-muted mb-3">Not sure if this service is right for you? Call us directly.</p>
+                    <a href="tel:+911234567890" class="text-decoration-none fw-bold fs-5 text-dark">
+                        <i class="fa-solid fa-phone text-warning me-2"></i> +91 9919 4400 95
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 </div>
 
 <?php include "footer.php"; ?>
 
-<!-- JS Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
     AOS.init({
-        duration: 1000,
+        duration: 800,
         once: true,
-        offset: 100
+        offset: 50
     });
 </script>
 

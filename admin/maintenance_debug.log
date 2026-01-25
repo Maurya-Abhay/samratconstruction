@@ -69,3 +69,11 @@
 2026-01-25T18:39:49+01:00 | uri=/jpconstruction/worker/login.php | segment=worker | flag=panel_down_worker | isDown=0 | until=0
 2026-01-25T18:39:54+01:00 | uri=/jpconstruction/attendence/login.php | segment=attendence | flag=panel_down_attendence | isDown=0 | until=0
 2026-01-25T18:39:59+01:00 | uri=/jpconstruction/attendence/login.php | segment=attendence | flag=panel_down_attendence | isDown=0 | until=0
+2026-01-25T19:59:46+01:00 | uri=/jpconstruction/attendence/login.php | segment=attendence | flag=panel_down_attendence | isDown=0 | until=0
+2026-01-25T20:01:05+01:00 | uri=/jpconstruction/attendence/login.php | segment=attendence | flag=panel_down_attendence | isDown=0 | until=0
+2026-01-25T20:03:08+01:00 | uri=/jpconstruction/worker/login.php | segment=worker | flag=panel_down_worker | isDown=0 | until=0
+2026-01-25T20:03:14+01:00 | uri=/jpconstruction/contact/login.php | segment=contact | flag=panel_down_contact | isDown=0 | until=0
+2026-01-25T20:22:50+01:00 | uri=/jpconstruction/attendence/login.php | segment=attendence | flag=panel_down_attendence | isDown=0 | until=0
+2026-01-25T20:22:54+01:00 | uri=/jpconstruction/attendence/login.php | segment=attendence | flag=panel_down_attendence | isDown=0 | until=0
+2026-01-25T20:23:01+01:00 | uri=/jpconstruction/worker/login.php | segment=worker | flag=panel_down_worker | isDown=0 | until=0
+2026-01-25T20:23:10+01:00 | uri=/jpconstruction/contact/login.php | segment=contact | flag=panel_down_contact | isDown=0 | until=0

@@ -1,5 +1,9 @@
 <?php
 // worker_login.php
+// --- Prevent Browser Caching ---
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
 
 require_once __DIR__ . '/../admin/lib_common.php';
 
@@ -46,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Check Rate Limit
     if (count($attempts[$ip]) >= $LOGIN_ATTEMPT_LIMIT) {
-        $popup = ['type' => 'error', 'message' => 'Too many login attempts. Please wait 15 minutes.'];
+        $popup = ['type' => 'error', 'message' => 'System Locked: Too many attempts. Wait 15m.'];
     } else {
         // Log this attempt
         $attempts[$ip][] = $now;
@@ -57,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Validate Credentials
         if ($identifier === '' || $password === '') {
-            $popup = ['type' => 'error', 'message' => 'Please enter both email/phone and password.'];
+            $popup = ['type' => 'error', 'message' => 'Worker ID/Email and Password required.'];
         } else {
             // Database Check (Workers Table)
             $stmt = $conn->prepare('SELECT id, name, email, phone, password FROM workers WHERE email = ? OR phone = ? LIMIT 1');
@@ -71,12 +75,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         // Success
                         session_regenerate_id(true); // Secure session
                         $_SESSION['worker_id'] = $row['id'];
-                        $popup = ['type' => 'success', 'message' => 'Login successful! Redirecting...'];
+                        $popup = ['type' => 'success', 'message' => 'Worker Verified. Accessing Site...'];
                     } else {
-                        $popup = ['type' => 'error', 'message' => 'Invalid password!'];
+                        $popup = ['type' => 'error', 'message' => 'Authentication Failed.'];
                     }
                 } else {
-                    $popup = ['type' => 'error', 'message' => 'Worker account not found!'];
+                    $popup = ['type' => 'error', 'message' => 'Worker account not found.'];
                 }
                 $stmt->close();
             } else {
@@ -95,234 +99,295 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Worker Login | JP Construction</title>
+    <title>Worker Portal | JP Construction</title>
+    
     <link rel="icon" href="../admin/assets/jp_construction_logo.webp" type="image/webp">
-    <meta name="description" content="Login to your JP Construction worker account to manage attendance, payments, and work details.">
-    <meta name="keywords" content="JP Construction worker login, worker portal, attendance, payments, construction, India">
-    <meta name="robots" content="noindex, nofollow">
-    <link rel="canonical" href="https://jpconstruction.in/worker/login.php">
-    <meta name="theme-color" content="#0d6efd" />
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Worker Login | JP Construction">
-    <meta property="og:description" content="Login to your JP Construction worker account to manage attendance, payments, and work details.">
-    <meta property="og:url" content="https://jpconstruction.in/worker/login.php">
-    <meta property="og:image" content="https://jpconstruction.in/admin/assets/jp_construction_logo.webp">
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Worker Login | JP Construction">
-    <meta name="twitter:description" content="Login to your JP Construction worker account to manage attendance, payments, and work details.">
-    <meta name="twitter:image" content="https://jpconstruction.in/admin/assets/jp_construction_logo.webp">
+    <meta name="theme-color" content="#0f172a" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         :root {
-            --primary-color: #0d6efd;
-            --primary-hover: #0b5ed7;
-            --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
-        }
-        html, body {
-            height: 100%;
-            margin: 0;
-            /* FIX 1: Removed overflow: hidden */
+            --bg-dark: #0f172a;       /* Deep Navy */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent: #f97316;        /* Safety Orange for Workers */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--bg-gradient);
-            /* FIX 2: Added min-height for reliable vertical centering */
-            min-height: 100vh;
+            background-color: var(--bg-dark);
+            height: 100vh;
             display: flex;
-            align-items: center;      /* Vertically Center */
-            justify-content: center; /* Horizontally Center */
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin: 0;
+            position: relative;
+        }
+
+        /* --- AMBIENT BACKGROUND ANIMATION --- */
+        .ambient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.35;
+            z-index: 0;
+            animation: float 11s infinite ease-in-out alternate;
+        }
+        .orb-1 {
+            width: 360px; height: 360px;
+            background: #f97316; /* Orange */
+            top: -60px; right: -20px;
+        }
+        .orb-2 {
+            width: 300px; height: 300px;
+            background: #ea580c; /* Darker Orange/Red */
+            bottom: -50px; left: -50px;
+            animation-delay: -3s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-30px, 40px) scale(1.05); }
+        }
+
+        /* --- GRID OVERLAY --- */
+        .grid-overlay {
+            position: absolute;
+            width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 45px 45px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* --- LOGIN CARD --- */
+        .login-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 400px;
             padding: 20px;
         }
 
-        /* Compact Modern Card */
-        .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 360px; /* Compact width */
-            position: relative;
-            z-index: 10;
-            /* FIX 3: Added margin: auto for better centering logic */
-            margin: auto; 
-        }
-
-        .card-header-custom {
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             text-align: center;
-            padding: 25px 20px 5px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .logo-img {
-            width: 45px;
-            height: 45px;
-            object-fit: contain;
-            margin-bottom: 8px;
-        }
-
-        .card-body-custom {
-            padding: 15px 25px 30px;
-        }
-
-        /* Floating Input Styles */
-        .form-floating > .form-control {
-            border-radius: 10px;
-            border: 1px solid #dee2e6;
-            height: 50px;
-            min-height: 50px;
-            font-size: 15px;
-        }
-        
-        .form-floating > label {
-            padding-top: 0.8rem;
-            padding-bottom: 0.8rem;
-            font-size: 0.9rem;
-        }
-
-        .form-floating > .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
-        }
-
-        /* Password Toggle */
-        .password-toggle {
+        .glass-card::before {
+            content: '';
             position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #6c757d;
-            z-index: 5;
-            background: none;
-            border: none;
-            padding: 0;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
         }
 
-        /* Compact Button */
-        .btn-primary-custom {
-            background: var(--primary-color);
-            border: none;
-            border-radius: 10px;
-            padding: 11px;
-            font-weight: 600;
-            font-size: 15px;
-            width: 100%;
-            margin-top: 10px;
-            transition: all 0.2s;
-            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.25);
-        }
-
-        .btn-primary-custom:hover {
-            background: var(--primary-hover);
-            transform: translateY(-1px);
-        }
-
-        .links-area {
+        .logo-container {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            margin: 0 auto 20px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-top: 12px;
-            font-size: 0.8rem;
-        }
-
-        .links-area a {
-            color: #6c757d;
-            text-decoration: none;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
         
-        .links-area a:hover { color: var(--primary-color); }
+        .logo-img { width: 50px; height: 50px; object-fit: contain; }
 
-        .divider {
-            margin: 20px 0 15px;
-            border-top: 1px solid #e9ecef;
-            position: relative;
-            text-align: center;
-        }
-
-        .divider span {
-            background: #fff;
-            padding: 0 8px;
-            color: #adb5bd;
-            font-size: 11px;
-            position: relative;
-            top: -9px;
-            text-transform: uppercase;
+        .brand-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 1.5rem;
+            margin-bottom: 5px;
             letter-spacing: 0.5px;
         }
 
-        /* Mobile Adjustments - Ensuring Center */
-        @media (max-width: 576px) {
-            body {
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                min-height: 100vh;
-            }
-            .login-card {
-                margin: auto; 
-                box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            }
+        .brand-subtitle {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
+
+        /* --- MODERN INPUTS --- */
+        .input-group-custom {
+            position: relative;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 16px 16px 16px 45px;
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-control-custom:focus {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            transition: 0.3s;
+            pointer-events: none;
+        }
+
+        .form-control-custom:focus + .input-icon { color: var(--accent); }
+
+        /* Password Toggle */
+        .pwd-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            transition: 0.3s;
+        }
+        .pwd-toggle:hover { color: white; }
+
+        /* --- BUTTON --- */
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent) 0%, #c2410c 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(249, 115, 22, 0.2);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(249, 115, 22, 0.3);
+            filter: brightness(1.1);
+        }
+
+        /* --- FOOTER --- */
+        .footer-links {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .footer-links span { color: var(--text-muted); opacity: 0.7; }
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .footer-links a:hover { color: var(--accent); }
+
+        .back-link {
+            display: block;
+            margin-top: 30px;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .back-link:hover { color: white; }
+
+        /* SweetAlert Overrides */
+        div:where(.swal2-container) h2:where(.swal2-title) { font-family: 'Outfit', sans-serif !important; }
+        div:where(.swal2-popup) { background: #1e293b !important; color: white !important; border: 1px solid #334155; }
     </style>
 </head>
 <body>
 
-    <div class="login-card">
-        <div class="card-header-custom">
-            <img src="../admin/assets/jp_construction_logo.webp" alt="Logo" class="logo-img">
-            <h5 class="fw-bold text-dark mb-0">Worker Login</h5>
-            <p class="text-muted small mb-0">Team Access</p>
-        </div>
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="grid-overlay"></div>
 
-        <div class="card-body-custom">
+    <div class="login-wrapper">
+        <div class="glass-card">
+            
+            <div class="logo-container">
+                <img src="../admin/assets/jp_construction_logo.webp" alt="JP" class="logo-img">
+            </div>
+            
+            <h2 class="brand-title">Worker Portal</h2>
+            <p class="brand-subtitle">Site & Payment Access</p>
+
             <form method="POST" autocomplete="off">
-                
-                <div class="form-floating mb-2">
-                    <input type="text" class="form-control" id="identifier" name="identifier" 
-                           placeholder="name@example.com" 
+                <div class="input-group-custom">
+                    <input type="text" class="form-control-custom" id="identifier" name="identifier" 
+                           placeholder="Email or Phone Number" 
                            value="<?= htmlspecialchars($_POST['identifier'] ?? '', ENT_QUOTES); ?>" required>
-                    <label for="identifier">Email or Phone</label>
+                    <i class="fa-solid fa-helmet-safety input-icon"></i>
                 </div>
 
-                <div class="position-relative mb-2">
-                    <div class="form-floating">
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-                        <label for="password">Password</label>
-                    </div>
-                    <button type="button" class="password-toggle" id="togglePwd" tabindex="-1">
-                        <i class="bi bi-eye-slash" id="eyeIcon"></i>
+                <div class="input-group-custom">
+                    <input type="password" class="form-control-custom" id="password" name="password" 
+                           placeholder="Password" required>
+                    <i class="fa-solid fa-key input-icon"></i>
+                    
+                    <button type="button" class="pwd-toggle" id="togglePwd" tabindex="-1">
+                        <i class="fa-regular fa-eye-slash" id="eyeIcon"></i>
                     </button>
                 </div>
 
-                <div class="links-area mb-3">
-                    <span class="text-muted">Issue logging in?</span>
-                    <a href="forgot_password.php">Forgot Password?</a>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-primary-custom text-white">
-                    Access Dashboard
+                <button type="submit" class="btn-submit">
+                    Enter Site <i class="fa-solid fa-person-digging ms-2"></i>
                 </button>
 
-                <div class="divider">
-                    <span>Authorized Workers Only</span>
+                <div class="footer-links">
+                    <span>JP Construction</span>
+                    <a href="forgot_password.php">Forgot Password?</a>
                 </div>
-                
-                <div class="text-center">
-                    <a href="../index.php" class="text-decoration-none small text-muted">
-                        <i class="bi bi-arrow-left me-1"></i> Back to Home
-                    </a>
-                </div>
-
             </form>
+
+            <a href="../index.php" class="back-link">
+                <i class="fa-solid fa-house me-1"></i> Back to Main Menu
+            </a>
+
         </div>
     </div>
 
@@ -332,44 +397,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const popupData = <?= json_encode($popup); ?>;
             Swal.fire({
                 icon: popupData.type,
-                title: popupData.type === 'success' ? 'Login Successful!' : 'Login Failed',
+                title: popupData.type === 'success' ? 'Authorized' : 'Access Denied',
                 text: popupData.message,
+                toast: true,
+                position: 'top',
                 showConfirmButton: false,
-                timer: popupData.type === 'success' ? 1800 : 2200,
-                position: 'center',
+                timer: 2500,
                 timerProgressBar: true,
-                willClose: () => {
-                    if (popupData.type === 'success') {
-                        window.location.href = 'dashboard.php';
-                    }
+                background: '#1e293b',
+                color: '#fff',
+                iconColor: popupData.type === 'success' ? '#10b981' : '#ef4444'
+            }).then(() => {
+                if (popupData.type === 'success') {
+                    window.location.href = 'dashboard.php';
                 }
             });
         <?php endif; ?>
 
-        // --- Password Toggle Visibility ---
+        // --- Password Toggle ---
         document.getElementById('togglePwd').addEventListener('click', function() {
             const passInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eyeIcon');
             
             if (passInput.type === 'password') {
                 passInput.type = 'text';
-                eyeIcon.classList.remove('bi-eye-slash');
-                eyeIcon.classList.add('bi-eye');
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
             } else {
                 passInput.type = 'password';
-                eyeIcon.classList.remove('bi-eye');
-                eyeIcon.classList.add('bi-eye-slash');
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
             }
         });
 
-        // --- Service Worker Registration (if applicable) ---
+        // --- Service Worker ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {
                 navigator.serviceWorker.register('/abhay/service-worker.js').catch(e => {});
             });
         }
     </script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
