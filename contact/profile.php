@@ -67,13 +67,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_contact'])) {
                 $errors[] = 'Malware detected, upload blocked.';
                 error_log('Malware upload attempt: '.$originalFileName.' by '.$_SERVER['REMOTE_ADDR']);
             } else {
-                // Upload to Cloudinary
-                $cloudinary_url = upload_to_cloudinary($tmp, 'contact_photos');
-                if ($cloudinary_url) {
+                $upload_dir = __DIR__ . '/../admin/uploads/';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+                $file_name = 'contact_' . $contact_id . '_' . time() . '.' . $ext;
+                $target_path = $upload_dir . $file_name;
+                if (move_uploaded_file($tmp, $target_path)) {
                     $photoUpdate = ", photo=?";
-                    $newPhotoValue = $cloudinary_url;
+                    $newPhotoValue = 'uploads/' . $file_name;
                 } else {
-                    $errors[] = 'Cloudinary upload failed.';
+                    $errors[] = 'Error uploading photo to server.';
                 }
             }
         }
@@ -125,7 +129,7 @@ $photoPath = (!empty($photo) && preg_match('#^https?://#', $photo)) ? $photo : '
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile | Client Portal</title>
-    <link rel="icon" href="../admin/assets/smrticon.png" type="image/png">
+    <link rel="icon" href="../admin/assets/jp_construction_logo.webp" type="image/webp">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

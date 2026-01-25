@@ -132,9 +132,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Account Recovery | Samrat Construction</title>
-    
-    <link rel="icon" href="../admin/assets/smrticon.png" type="image/png">
+    <title>Account Recovery | JP Construction</title>
+    <link rel="icon" href="../admin/assets/jp_construction_logo.webp" type="image/webp">
     <meta name="theme-color" content="#0d6efd" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">

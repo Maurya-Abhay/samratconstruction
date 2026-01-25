@@ -137,7 +137,7 @@ function buildUpiUrl($vpa, $payee, $amount, $note){
     <title>UPI Payment | Client Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="icon" href="../admin/assets/smrticon.png" type="image/png">
+    <link rel="icon" href="../admin/assets/jp_construction_logo.webp" type="image/webp">
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
         .upi-info { background-color: #f0f7ff; border-left: 5px solid #0d6efd; }

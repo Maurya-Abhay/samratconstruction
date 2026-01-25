@@ -20,7 +20,7 @@ while ($row = $res->fetch_assoc()) {
         
         <div class="row align-items-center border-bottom border-secondary-subtle pb-3 mb-3">
             <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
-                <small class="fw-light text-secondary">&copy; <?= date('Y') ?> <b>Samrat Construction Pvt. Ltd.</b></small>
+                <small class="fw-light text-secondary">&copy; <?= date('Y') ?> <b>JP Construction</b></small>
             </div>
             <div class="col-md-6 text-center text-md-end">
                 <span class="badge bg-light text-dark fw-normal p-2">

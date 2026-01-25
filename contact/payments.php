@@ -37,7 +37,7 @@ $stmt->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="../admin/assets/smrticon.png" type="image/png">
+    <link rel="icon" href="../admin/assets/jp_construction_logo.webp" type="image/webp">
     <title>Payment History | Client Portal</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
