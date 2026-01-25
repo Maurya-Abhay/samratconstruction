@@ -33,7 +33,7 @@ $service = $result->fetch_assoc();
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title><?= htmlspecialchars($service['service_name']) ?> | Samrat Construction</title>
-    <link rel="icon" href="admin/assets/smrticon.png" type="image/png">
+    <link rel="icon" href="admin/assets/jp_construction_logo.webp" type="image/webp">
 
     <!-- Fonts: Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

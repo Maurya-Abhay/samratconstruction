@@ -28,4 +28,15 @@ ErrorDocument 503 /error/503.html
 #   Deny from all
 # </Directory>
 # End of file
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|json|webp|html)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <Files "service-worker.js">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </Files>
+  <Files "manifest.json">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </Files>
+</IfModule>
 ErrorDocument 500 /error/500.html

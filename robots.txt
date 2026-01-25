@@ -1,0 +1,5 @@
+
+User-agent: *
+Disallow: /admin/
+Allow: /
+Sitemap: https://smrtbuild.great-site.net/sitemap.xml

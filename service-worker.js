@@ -1,21 +1,47 @@
+
+const CACHE_NAME = 'jpconstruction-cache-v1';
+const OFFLINE_URL = '/offline.html';
+
 self.addEventListener('install', function(event) {
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(function(cache) {
+      return cache.addAll([
+        '/',
+        '/index.php',
+        '/manifest.json',
+        '/admin/assets/jp_construction_logo.webp',
+        OFFLINE_URL
+      ]);
+    })
+  );
 });
 
 self.addEventListener('activate', function(event) {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.filter(function(name) {
+          return name !== CACHE_NAME;
+        }).map(function(name) {
+          return caches.delete(name);
+        })
+      );
+    }).then(function() {
+      return self.clients.claim();
+    })
+  );
 });
 
 self.addEventListener('fetch', function(event) {
+  if (event.request.method !== 'GET') return;
   event.respondWith(
-    caches.open('samratpro-cache').then(function(cache) {
-      return cache.match(event.request).then(function(response) {
-        return response || fetch(event.request).then(function(networkResponse) {
-          if (event.request.method === 'GET' && networkResponse.ok) {
-            cache.put(event.request, networkResponse.clone());
-          }
-          return networkResponse;
-        });
+    caches.match(event.request).then(function(response) {
+      return response || fetch(event.request).catch(function() {
+        // Offline fallback
+        if (event.request.mode === 'navigate') {
+          return caches.match(OFFLINE_URL);
+        }
       });
     })
   );

@@ -1,96 +1,137 @@
 <?php session_start(); ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- PWA Manifest and Theme Color -->
-    <link rel="manifest" href="/htdocs/manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="admin/assets/jp_construction_logo.webp" type="image/webp">
+    <title>Terms & Conditions | JP Construction</title>
+    <meta name="description" content="Read the terms and conditions for using JP Construction's website and services. Understand your rights and responsibilities as a user.">
+    <meta name="keywords" content="JP Construction terms, terms and conditions, website policy, user agreement, India">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://jpconstruction.in/terms.php">
     <meta name="theme-color" content="#0d6efd">
-
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Removed redundant/old CSP, relying on modern browser security practices -->
-    
-    <link rel="icon" href="admin/assets/smrticon.png" type="image/png" />
-
-    <title>Terms & Conditions - Construction Company</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-    <!-- Font Awesome & Bootstrap Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Terms & Conditions | JP Construction">
+    <meta property="og:description" content="Read the terms and conditions for using JP Construction's website and services. Understand your rights and responsibilities as a user.">
+    <meta property="og:url" content="https://jpconstruction.in/terms.php">
+    <meta property="og:image" content="https://jpconstruction.in/admin/assets/jp_construction_logo.webp">
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Terms & Conditions | JP Construction">
+    <meta name="twitter:description" content="Read the terms and conditions for using JP Construction's website and services. Understand your rights and responsibilities as a user.">
+    <meta name="twitter:image" content="https://jpconstruction.in/admin/assets/jp_construction_logo.webp">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Define a custom primary color variable for consistency */
         :root {
-            --bs-primary-dark: #0056b3; /* Darker shade of Bootstrap Primary Blue */
-            --bs-secondary-text: #495057; /* Slightly darker than default text */
-            --bs-section-bg: #ffffff;
-            --bs-body-bg: #f5f7fa; /* Light, modern background */
+            --primary-color: #8245ec;
+            --text-dark: #2d3436;
+            --text-muted: #636e72;
+            --bg-light: #f8faff;
         }
 
         body {
-            background-color: var(--bs-body-bg);
-            font-family: 'Inter', sans-serif; /* A modern font preference */
+            background-color: var(--bg-light);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            scroll-behavior: smooth;
         }
 
-        /* Modernize the main content container */
-        .content-card {
-            background-color: var(--bs-section-bg);
-            border-radius: 1rem; /* More rounded corners */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Deeper, softer shadow */
-            padding: 2.5rem !important; /* Increase padding */
-            transition: transform 0.3s ease;
+        /* Header Offset for Sticky Navbar */
+        .legal-container {
+            margin-top: 40px;
+            margin-bottom: 80px;
         }
 
-        /* Style the main title with a clean gradient */
-        .page-title {
-            font-weight: 700;
-            font-size: 2.5rem;
-            text-align: center;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.5rem !important;
-            
-            /* Modern Gradient Effect */
-            background: linear-gradient(45deg, var(--bs-primary), var(--bs-primary-dark));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            color: transparent; /* Fallback for browsers */
+        /* Sidebar Nav */
+        .terms-nav {
+            position: sticky;
+            top: 100px;
+            border-left: 2px solid #e0e0e0;
+            padding-left: 20px;
         }
 
-        /* Style for section headings */
-        h2 {
-            color: var(--bs-primary-dark);
-            font-size: 1.5rem;
+        .terms-nav a {
+            display: block;
+            padding: 8px 0;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .terms-nav a:hover, .terms-nav a.active {
+            color: var(--primary-color);
             font-weight: 600;
-            border-bottom: 3px solid rgba(0, 123, 255, 0.1); /* Subtle underline */
-            padding-bottom: 0.25rem;
-            margin-bottom: 1rem;
+            padding-left: 5px;
         }
 
-        p {
-            line-height: 1.7;
-            color: var(--bs-secondary-text);
-            margin-bottom: 1.25rem;
+        /* Main Content Card */
+        .content-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+            padding: 50px;
+            border: 1px solid rgba(0,0,0,0.02);
         }
 
-        /* Subtle separator line */
-        .section-divider {
-            border: 0;
-            height: 1px;
-            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
-            margin: 2rem 0;
+        .page-header {
+            margin-bottom: 40px;
+            border-bottom: 2px solid #f1f1f1;
+            padding-bottom: 20px;
         }
 
-        /* Footer styling */
-        footer {
-            text-align: center;
-            font-size: 0.9em;
-            padding: 1.5em;
-            color: #777;
+        .page-header h1 {
+            font-weight: 800;
+            font-size: 2.2rem;
+            color: #1a1a1a;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        section h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            color: #1a1a1a;
+        }
+
+        section h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        section p {
+            line-height: 1.8;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+
+        /* Contact Box */
+        .contact-box {
+            background: #f4f0ff;
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px dashed var(--primary-color);
+            margin-top: 30px;
+        }
+
+        @media (max-width: 991px) {
+            .terms-nav { display: none; }
+            .content-card { padding: 30px; }
         }
     </style>
 </head>
@@ -98,85 +139,81 @@
 
     <?php include "header.php"; ?>
 
-    <div class="container my-5">
-        <!-- Replaced default classes with the custom 'content-card' -->
-        <div class="content-card">
-            <h1 class="page-title">Website Terms & Conditions</h1>
+    <div class="container legal-container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="terms-nav">
+                    <h6 class="text-uppercase fw-bold small mb-3">Sections</h6>
+                    <a href="#acceptance">1. Acceptance</a>
+                    <a href="#responsibility">2. User Duty</a>
+                    <a href="#property">3. Intellectual Property</a>
+                    <a href="#liability">4. Liability</a>
+                    <a href="#external">5. Third Party Links</a>
+                    <a href="#governing">6. Governing Law</a>
+                    <a href="#contact">7. Contact Us</a>
+                </div>
+            </div>
 
-            <!-- Section 1 -->
-            <section>
-                <h2>1. Acceptance of Terms</h2>
-                <p>By accessing or using this website, you agree to be bound by these Terms and Conditions. If you do not agree, please cease use of this website immediately.</p>
-            </section>
-            <hr class="section-divider">
+            <div class="col-lg-9">
+                <div class="content-card">
+                    <div class="page-header">
+                        <h1>Terms & Conditions</h1>
+                        <p>Last Updated: <?= date('F d, Y') ?></p>
+                    </div>
 
-            <!-- Section 2 -->
-            <section>
-                <h2>2. User Responsibilities</h2>
-                <p>You agree to use the website only for lawful purposes. You are strictly prohibited from using the site to infringe on the rights of others, transmit harmful content, or perform any activity that could damage or impair the functionality, security, or integrity of this site or its associated services.</p>
-            </section>
-            <hr class="section-divider">
+                    <section id="acceptance">
+                        <h2><i class="fa-solid fa-file-contract"></i> 1. Acceptance of Terms</h2>
+                        <p>By accessing or using this website, you agree to be bound by these Terms and Conditions. Our services are provided to you subject to your compliance with these rules. If you do not agree, please cease use of this website immediately.</p>
+                    </section>
 
-            <!-- Section 3 -->
-            <section>
-                <h2>3. Intellectual Property</h2>
-                <p>All content including text, graphics, logos, images, and software is the property of Samrat Construction and is protected by international copyright and trademark laws. You may not reuse, modify, or distribute any content without explicit prior written consent from Samrat Construction.</p>
-            </section>
-            <hr class="section-divider">
+                    <section id="responsibility">
+                        <h2><i class="fa-solid fa-user-shield"></i> 2. User Responsibilities</h2>
+                        <p>You agree to use the website only for lawful purposes. You are strictly prohibited from using the site to infringe on the rights of others, transmit harmful content (viruses/malware), or perform any activity that could damage the security of this platform.</p>
+                    </section>
 
-            <!-- Section 4 -->
-            <section>
-                <h2>4. Limitation of Liability</h2>
-                <p>We do not guarantee that the website will be entirely error-free or uninterrupted. We are not liable for any direct, indirect, incidental, consequential, or punitive damages arising from the use or inability to use the site or its content, even if we have been advised of the possibility of such damages.</p>
-            </section>
-            <hr class="section-divider">
+                    <section id="property">
+                        <h2><i class="fa-solid fa-copyright"></i> 3. Intellectual Property</h2>
+                        <p>All content including text, graphics, logos, images, and software is the property of <strong>JP Construction Works</strong>. You may not reuse, modify, or distribute any content without explicit prior written consent from our management.</p>
+                    </section>
 
-            <!-- Section 5 -->
-            <section>
-                <h2>5. External Links</h2>
-                <p>This site may contain links to third-party websites for your convenience. We are not responsible for the content, privacy policies, or practices of those external websites and do not implicitly endorse them. Accessing any linked site is at your own risk.</p>
-            </section>
-            <hr class="section-divider">
+                    <section id="liability">
+                        <h2><i class="fa-solid fa-handshake-slash"></i> 4. Limitation of Liability</h2>
+                        <p>While we strive for excellence, we do not guarantee that the website will be entirely error-free. We are not liable for any direct or indirect damages arising from the use or inability to use the site, including data loss or business interruption.</p>
+                    </section>
 
-            <!-- Section 6 -->
-            <section>
-                <h2>6. Termination</h2>
-                <p>We reserve the right to suspend or terminate your access to the website or any of its services at any time, without prior notice, for any reason, including any breach of these terms.</p>
-            </section>
-            <hr class="section-divider">
+                    <section id="external">
+                        <h2><i class="fa-solid fa-link"></i> 5. External Links</h2>
+                        <p>This site may contain links to third-party websites (like GitHub or LinkedIn). We are not responsible for the content or privacy policies of those external websites. Accessing them is at your own risk.</p>
+                    </section>
 
-            <!-- Section 7 -->
-            <section>
-                <h2>7. Changes to Terms</h2>
-                <p>We reserve the right to modify these terms at any time. Any changes will be posted on this page, and your continued use of the website after such modifications constitutes your acceptance of the updated terms. You are encouraged to review this page periodically.</p>
-            </section>
-            <hr class="section-divider">
+                    <section id="governing">
+                        <h2><i class="fa-solid fa-gavel"></i> 6. Governing Law</h2>
+                        <p>These terms are governed by the laws of <strong>Bihar, India</strong>. Any legal disputes arising hereunder shall be resolved exclusively by the local courts of Saran/Bihar, India.</p>
+                    </section>
 
-            <!-- Section 8 -->
-            <section>
-                <h2>8. Governing Law</h2>
-                <p>These terms and conditions are governed by and shall be interpreted in accordance with the laws of Bihar, India, without regard to its conflict of law principles. Any legal disputes arising hereunder shall be resolved exclusively by the local courts of Bihar, India.</p>
-            </section>
-            <hr class="section-divider">
-
-            <!-- Section 9 -->
-            <section>
-                <h2>9. Contact Us</h2>
-                <p>If you have any questions or concerns regarding these Terms and Conditions, please contact us:</p>
-                <p>Email: 
-                    <a href="mailto:abhayprasad.maurya@gmail.com" class="text-decoration-none fw-bold text-primary">abhayprasad.maurya@gmail.com</a>
-                </p>
-            </section>
+                    <section id="contact">
+                        <h2><i class="fa-solid fa-envelope-open-text"></i> 7. Contact Us</h2>
+                        <p>If you have any questions regarding these Terms, feel free to reach out to our legal team.</p>
+                        
+                        <div class="contact-box">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-circle me-3">
+                                    <i class="fa-solid fa-headset text-primary fs-3"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1 fw-bold">Support Email</h6>
+                                    <a href="mailto:abhayprasad.maurya@gmail.com" class="text-decoration-none fw-bold text-primary">jp.maurya@gmail.com</a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
         </div>
     </div>
 
     <?php include "footer.php"; ?>
 
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Optional reCAPTCHA -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
 </body>
 </html>
