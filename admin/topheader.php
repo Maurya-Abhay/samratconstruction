@@ -133,7 +133,7 @@ if (!$admin) {
 
   <title>Admin Dashboard</title>
 
-  <link rel="icon" href="./assets/smrticon.png" type="image/png">
+  <link rel="icon" href="./assets/jp_construction_logo.webp" type="image/webp">
 
     <!-- PWA Manifest & Service Worker -->
 

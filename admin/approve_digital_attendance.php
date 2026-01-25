@@ -160,7 +160,7 @@ echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
                     <div class="col-md-2 text-center">
                         <?php
                         $photo = $row['photo'];
-                        // Assuming $photo is already a direct Cloudinary URL or full path
+                        // Assuming $photo is already a direct URL or full path
                         $img_src = htmlspecialchars($photo); 
                         ?>
                         <img src="<?= $img_src ?>" class="att-photo mb-2" alt="Worker Photo" onclick="showImageModal('<?= $img_src ?>')">

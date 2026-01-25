@@ -247,13 +247,25 @@ $photoPath = !empty($admin['photo']) ? $admin['photo'] : '';
 
                 <!-- Avatar -->
                 <div class="avatar-container">
-                    <?php if ($photoPath): ?>
-                        <img src="<?= htmlspecialchars($photoPath) ?>" class="profile-img" alt="Admin Photo">
-                    <?php else: ?>
-                        <div class="profile-initials">
-                            <?= strtoupper(substr($admin['name'], 0, 1)) ?>
-                        </div>
-                    <?php endif; ?>
+                                        <?php if ($photoPath): ?>
+                                                <?php
+                                                    $img_url = htmlspecialchars($photoPath);
+                                                    $img_file = $photoPath;
+                                                    if (strpos($img_file, 'uploads/') === 0) {
+                                                        $img_file = __DIR__ . '/' . $img_file;
+                                                    }
+                                                    if (file_exists($img_file)) {
+                                                        $img_url .= '?v=' . filemtime($img_file);
+                                                    } else {
+                                                        $img_url .= '?v=' . time();
+                                                    }
+                                                ?>
+                                                <img src="<?= $img_url ?>" class="profile-img" alt="Admin Photo">
+                                        <?php else: ?>
+                                                <div class="profile-initials">
+                                                        <?= strtoupper(substr($admin['name'], 0, 1)) ?>
+                                                </div>
+                                        <?php endif; ?>
                 </div>
 
                 <!-- Body -->

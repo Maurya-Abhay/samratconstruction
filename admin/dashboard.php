@@ -389,6 +389,12 @@ $greeting = ($hour < 12) ? 'Good Morning' : (($hour < 18) ? 'Good Afternoon' : '
                         <span class="module-count"><?= $attendance_users ?></span>
                     </a>
                 </div>
+                <div class="col-md-6 col-lg-4">
+                    <a href="contact_messages.php" class="module-card">
+                        <div class="module-icon"><i class="bi bi-envelope-paper"></i></div>
+                        <span>Contact Messages</span>
+                    </a>
+                </div>
             </div>
 
             <div class="section-title"><i class="bi bi-wallet2 me-2"></i>Finance & Operations</div>
@@ -601,10 +607,10 @@ $greeting = ($hour < 12) ? 'Good Morning' : (($hour < 18) ? 'Good Afternoon' : '
         loadTraffic(30); // Initial Load
     })();
 
-    // Auto-refresh every 1 minute for admin panel
+    // Auto-refresh every 10 minutes for admin panel
     setInterval(function() {
         location.reload();
-    }, 60000);
+    }, 600000);
     
 </script>
 

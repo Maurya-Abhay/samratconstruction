@@ -1,66 +1,10 @@
 <?php
 /**
  * lib_common.php - Secure and common helper functions for admin pages.
- * Includes Session management, App Settings, Role Check, Cloudinary Upload, Maintenance, and Basic IDS.
+ * Includes Session management, App Settings, Role Check, Maintenance, and Basic IDS.
  */
 
-// --- Cloudinary Image Upload Helper ---
 
-if (!function_exists('upload_to_cloudinary')) {
-    /**
-     * Uploads a file to Cloudinary using Signed Upload.
-     * @param string $file_tmp Path to the temporary file.
-     * @param string $file_type MIME type of the file.
-     * @param string $file_name Original file name.
-     * @return string|false Cloudinary secure URL or false on failure.
-     */
-    function upload_to_cloudinary($file_tmp, $file_type, $file_name) {
-        if (!isset($GLOBALS['conn'])) return false; 
-        $cloud_name = get_setting('cloud_name');
-        $api_key = get_setting('cloud_api_key');
-        $api_secret = get_setting('cloud_api_secret');
-        if (!$cloud_name || !$api_key || !$api_secret) {
-            log_security_alert('Cloudinary_Config_Missing', 'Cloudinary settings are incomplete.');
-            return false;
-        }
-        $upload_url = 'https://api.cloudinary.com/v1_1/' . $cloud_name . '/image/upload';
-        $timestamp = time();
-        $signature_string = 'timestamp=' . $timestamp . $api_secret;
-        $signature = sha1($signature_string);
-        $params = [
-            'timestamp' => $timestamp,
-            'api_key' => $api_key,
-            'signature' => $signature,
-        ];
-        if (!function_exists('curl_file_create')) {
-            log_security_alert('CURL_Missing_Function', 'curl_file_create is not available.');
-            return false;
-        }
-        $cfile = curl_file_create($file_tmp, $file_type, $file_name);
-        $params['file'] = $cfile;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $upload_url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-        $response = curl_exec($ch);
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if (curl_errno($ch)) {
-            log_security_alert('Cloudinary_CURL_Error', curl_error($ch));
-            curl_close($ch);
-            return false;
-        }
-        curl_close($ch);
-        $result = json_decode($response, true);
-        if ($http_code !== 200) {
-            $error_msg = $result['error']['message'] ?? 'Unknown Cloudinary error.';
-            log_security_alert('Cloudinary_API_Error', "HTTP Code: {$http_code}, Message: {$error_msg}");
-            return false;
-        }
-        return !empty($result['secure_url']) ? $result['secure_url'] : false;
-    }
-}
 
 // Check for existing functions/definitions to prevent redeclaration errors
 if (!function_exists('is_ip_whitelisted')) {

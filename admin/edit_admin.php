@@ -58,13 +58,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } elseif (!in_array($mime_type, $allowed_mime_types)) {
                 $error = "Only JPG, PNG, and WEBP files are allowed.";
             } else {
-                // Cloudinary upload
-                $cloud_url = upload_to_cloudinary($photo['tmp_name'], $photo['type'], $photo['name']);
-                if ($cloud_url) {
-                    $new_photo_path = $cloud_url;
+                $upload_dir = __DIR__ . '/uploads/';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+                $ext = pathinfo($photo['name'], PATHINFO_EXTENSION);
+                $file_name = 'admin_' . $id . '_' . time() . '.' . $ext;
+                $target_path = $upload_dir . $file_name;
+                if (move_uploaded_file($photo['tmp_name'], $target_path)) {
+                    $new_photo_path = 'uploads/' . $file_name;
                     $set_photo_sql_part = ", photo = ?";
                 } else {
-                    $error = "Error uploading photo to Cloudinary.";
+                    $error = "Error uploading photo to server.";
                 }
             }
         }

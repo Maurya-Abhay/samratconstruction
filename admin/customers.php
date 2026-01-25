@@ -35,14 +35,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (!in_array($file_extension, ["jpg","jpeg","png","gif","webp"])) { $message = "Only JPG, PNG, GIF allowed."; $uploadOk = 0; }
 
             if ($uploadOk == 1) {
-                require_once __DIR__ . '/lib_common.php';
-                $cloud_url = upload_to_cloudinary($photo["tmp_name"], $photo["type"], $photo["name"]);
-                if ($cloud_url) {
+                $upload_dir = __DIR__ . '/uploads/';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+                $ext = pathinfo($photo['name'], PATHINFO_EXTENSION);
+                $file_name = 'customer_' . time() . '_' . rand(1000,9999) . '.' . $ext;
+                $target_path = $upload_dir . $file_name;
+                if (move_uploaded_file($photo['tmp_name'], $target_path)) {
                     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                     $sql = "INSERT INTO contacts (name, email, phone, address, aadhaar, joining_date, status, password, photo, notes, contract_amount, amount_paid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                    $stmt = $conn->prepare($sql);
                     $j_date = !empty($joining_date) ? $joining_date : null;
-                    $stmt->bind_param("ssssssssssdd", $name, $email, $phone, $address, $aadhaar, $j_date, $status, $hashed_password, $cloud_url, $notes, $contract_amount, $amount_paid);
+                    $photo_path = 'uploads/' . $file_name;
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("ssssssssssdd", $name, $email, $phone, $address, $aadhaar, $j_date, $status, $hashed_password, $photo_path, $notes, $contract_amount, $amount_paid);
                     if ($stmt->execute()) {
                         header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
                         exit();
@@ -50,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $message = "Database Error: " . $stmt->error;
                     }
                 } else {
-                    $message = "Error uploading to Cloudinary.";
+                    $message = "Error uploading photo to server.";
                 }
             }
         } else {
@@ -72,12 +78,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Handle Photo
             if ($photo && $photo['name']) {
-                require_once __DIR__ . '/lib_common.php';
-                $cloud_url = upload_to_cloudinary($photo["tmp_name"], $photo["type"], $photo["name"]);
-                if ($cloud_url) {
+                $upload_dir = __DIR__ . '/uploads/';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+                $ext = pathinfo($photo['name'], PATHINFO_EXTENSION);
+                $file_name = 'customer_' . $id . '_' . time() . '.' . $ext;
+                $target_path = $upload_dir . $file_name;
+                if (move_uploaded_file($photo['tmp_name'], $target_path)) {
                     $sql .= ", photo=?";
                     $types .= "s";
-                    $params[] = $cloud_url;
+                    $params[] = 'uploads/' . $file_name;
                 }
             }
 
@@ -279,8 +290,19 @@ $total_contacts = $contacts->num_rows;
                                 <td class="ps-4 fw-bold text-secondary">#<?= $row['id'] ?></td>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <?php $img = !empty($row['photo']) ? htmlspecialchars($row['photo']) : 'assets/default-avatar.png'; ?>
-                                        <img src="<?= $img ?>" class="contact-thumb me-3">
+                                                                                <?php
+                                                                                    $img = !empty($row['photo']) ? htmlspecialchars($row['photo']) : 'assets/default-avatar.png';
+                                                                                    $img_url = $img;
+                                                                                    if (strpos($img, 'http') === 0) {
+                                                                                        // External image
+                                                                                        $img_url .= '?v=' . time();
+                                                                                    } else if (file_exists($img)) {
+                                                                                        $img_url .= '?v=' . filemtime($img);
+                                                                                    } else {
+                                                                                        $img_url .= '?v=' . time();
+                                                                                    }
+                                                                                ?>
+                                                                                <img src="<?= $img_url ?>" class="contact-thumb me-3">
                                         <div>
                                             <div class="fw-bold text-dark"><?= htmlspecialchars($row['name']) ?></div>
                                             <small class="text-muted"><i class="bi bi-geo-alt me-1"></i><?= htmlspecialchars($row['address'] ?? 'N/A') ?></small>

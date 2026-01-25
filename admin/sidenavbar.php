@@ -22,7 +22,7 @@
 
 <div class="sidebar" id="sidebar">
 
-  <div class="logo"><img src="assets/smrticon.png" style="width:36px;"> SAMRAT</div>
+  <div class="logo"><img src="./assets/jp_construction_logo.webp" style="width:48px;"> JP</div>
 
   <nav class="nav flex-column">
 
@@ -58,6 +58,8 @@
 
     <a class="nav-link<?= __navActive(['settings.php']) ?>" href="settings.php"><i class="bi bi-sliders2"></i> Settings</a>
 
+
+    <a class="nav-link<?= __navActive(['contact_messages.php']) ?>" href="contact_messages.php"><i class="bi bi-envelope-paper"></i> Contact Messages</a>
     <a class="nav-link<?= __navActive(['site_settings.php']) ?>" href="site_settings.php"><i class="bi bi-sliders2-vertical"></i> Site Settings</a>
 
     <a class="nav-link<?= __navActive('db_cleaner.php') ?>" href="db_cleaner.php"><i class="bi bi-database-gear"></i> DB Cleaner</a>

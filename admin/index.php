@@ -64,7 +64,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 if (password_verify($password, $row['password'])) {
                     // Success
                     $_SESSION['email'] = $row['email'];
-                    // We use JS for redirect to show the success popup first
                     $popup = ['type' => 'success', 'message' => 'Login successful! Redirecting...'];
                 } else {
                     $popup = ['type' => 'error', 'message' => 'Invalid password!'];
@@ -85,9 +84,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Admin Login | Samrat Construction</title>
+    <title>Admin Login | JP Construction</title>
     
-    <link rel="icon" href="assets/smrticon.png" type="image/png">
+    <link rel="icon" href="./assets/jp_construction_logo.webp" type="image/webp">
     <meta name="theme-color" content="#0d6efd" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -105,24 +104,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
         }
 
-        html, body {
-            height: 100%;
-            margin: 0;
-            /* overflow: hidden; Removed this to prevent layout issues */
-        }
-
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg-gradient);
-            /* Added min-height for reliable vertical centering */
             min-height: 100vh;
             display: flex;
-            align-items: center;      /* Vertically Center */
-            justify-content: center; /* Horizontally Center */
+            align-items: center;
+            justify-content: center;
             padding: 20px;
+            margin: 0;
         }
 
-        /* Compact Modern Card */
         .login-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
@@ -130,10 +122,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             border-radius: 16px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 360px; /* Compact width */
-            position: relative;
+            max-width: 360px;
             z-index: 10;
-            margin: auto; /* Added for extra centering reliability */
         }
 
         .card-header-custom {
@@ -142,8 +132,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         .logo-img {
-            width: 45px;
-            height: 45px;
+            width: 100px;
+            height: 100px;
             object-fit: contain;
             margin-bottom: 8px;
         }
@@ -152,27 +142,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             padding: 15px 25px 30px;
         }
 
-        /* Floating Input Styles */
         .form-floating > .form-control {
             border-radius: 10px;
-            border: 1px solid #dee2e6;
             height: 50px;
-            min-height: 50px;
             font-size: 15px;
         }
-        
-        .form-floating > label {
-            padding-top: 0.8rem;
-            padding-bottom: 0.8rem;
-            font-size: 0.9rem;
-        }
 
-        .form-floating > .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
-        }
-
-        /* Password Toggle */
         .password-toggle {
             position: absolute;
             right: 15px;
@@ -183,42 +158,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             z-index: 5;
             background: none;
             border: none;
-            padding: 0;
         }
 
-        /* Compact Button */
         .btn-primary-custom {
             background: var(--primary-color);
             border: none;
             border-radius: 10px;
-            padding: 11px;
+            padding: 12px;
             font-weight: 600;
-            font-size: 15px;
             width: 100%;
             margin-top: 10px;
-            transition: all 0.2s;
             box-shadow: 0 4px 10px rgba(13, 110, 253, 0.25);
         }
-
-        .btn-primary-custom:hover {
-            background: var(--primary-hover);
-            transform: translateY(-1px);
-        }
-
-        .links-area {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 12px;
-            font-size: 0.8rem;
-        }
-
-        .links-area a {
-            color: #6c757d;
-            text-decoration: none;
-        }
-        
-        .links-area a:hover { color: var(--primary-color); }
 
         .divider {
             margin: 20px 0 15px;
@@ -233,23 +184,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             color: #adb5bd;
             font-size: 11px;
             position: relative;
-            top: -9px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            top: -10px;
         }
 
-        /* Mobile Adjustments - Ensuring Center */
-        @media (max-width: 576px) {
-            body {
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                min-height: 100vh;
-            }
-            .login-card {
-                margin: auto; /* Ensures vertical and horizontal centering */
-                box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            }
+        .links-area {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -257,17 +199,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <div class="login-card">
         <div class="card-header-custom">
-            <img src="assets/smrticon.png" alt="Logo" class="logo-img">
+            <img src="assets/jp_construction_logo.webp" alt="Logo" class="logo-img">
             <h5 class="fw-bold text-dark mb-0">Admin Login</h5>
-            <p class="text-muted small mb-0">Secure Panel Access</p>
+            <p class="text-muted small">Secure Panel Access</p>
         </div>
 
         <div class="card-body-custom">
             <form method="POST" autocomplete="off">
-                
-                <div class="form-floating mb-2">
+                <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="identifier" name="identifier" 
-                           placeholder="name@example.com" 
+                           placeholder="Email or Phone" 
                            value="<?= htmlspecialchars($_POST['identifier'] ?? '', ENT_QUOTES); ?>" required>
                     <label for="identifier">Email or Phone</label>
                 </div>
@@ -284,10 +225,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <div class="links-area mb-3">
                     <span class="text-muted">Administrator</span>
-                    <a href="forgot_password.php">Forgot Password?</a>
+                    <a href="forgot_password.php" class="text-decoration-none">Forgot Password?</a>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-primary-custom text-white">
+                <button type="submit" class="btn btn-primary-custom text-white">
                     Access Dashboard
                 </button>
 
@@ -300,7 +241,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         <i class="bi bi-arrow-left me-1"></i> Back to Main
                     </a>
                 </div>
-
             </form>
         </div>
     </div>
@@ -308,46 +248,31 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <script>
         // --- SweetAlert Feedback ---
         <?php if ($popup): ?>
-            const popupData = <?= json_encode($popup); ?>;
             Swal.fire({
-                icon: popupData.type,
-                title: popupData.message,
+                icon: '<?= $popup['type'] ?>',
+                title: '<?= $popup['message'] ?>',
                 toast: true,
                 position: 'top',
                 showConfirmButton: false,
                 timer: 2000,
                 timerProgressBar: true
             }).then(() => {
-                if (popupData.type === 'success') {
+                <?php if ($popup['type'] === 'success'): ?>
                     window.location.href = 'dashboard.php';
-                }
+                <?php endif; ?>
             });
         <?php endif; ?>
 
-        // --- Password Toggle Visibility ---
+        // --- Password Toggle ---
         document.getElementById('togglePwd').addEventListener('click', function() {
             const passInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eyeIcon');
+            const isPass = passInput.type === 'password';
             
-            if (passInput.type === 'password') {
-                passInput.type = 'text';
-                eyeIcon.classList.remove('bi-eye-slash');
-                eyeIcon.classList.add('bi-eye');
-            } else {
-                passInput.type = 'password';
-                eyeIcon.classList.remove('bi-eye');
-                eyeIcon.classList.add('bi-eye-slash');
-            }
+            passInput.type = isPass ? 'text' : 'password';
+            eyeIcon.classList.toggle('bi-eye-slash', !isPass);
+            eyeIcon.classList.toggle('bi-eye', isPass);
         });
-
-        // --- Service Worker Registration ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function () {
-                navigator.serviceWorker.register('/abhay/service-worker.js').catch(e => {});
-            });
-        }
     </script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

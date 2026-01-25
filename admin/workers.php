@@ -105,14 +105,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
             if ($uploadOk == 0) {
                 $message = "Sorry, your file was not uploaded. " . $message;
             } else {
-                require_once __DIR__ . '/lib_common.php';
-                $cloud_url = upload_to_cloudinary($photo["tmp_name"], $photo["type"], $photo["name"]);
-                if ($cloud_url) {
+                $upload_dir = __DIR__ . '/uploads/';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+                $ext = pathinfo($photo['name'], PATHINFO_EXTENSION);
+                $file_name = 'worker_' . time() . '_' . rand(1000,9999) . '.' . $ext;
+                $target_path = $upload_dir . $file_name;
+                if (move_uploaded_file($photo['tmp_name'], $target_path)) {
                     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                     $stmt = $conn->prepare("INSERT INTO workers (name, email, phone, address, aadhaar, joining_date, salary, status, password, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                     $j_date = !empty($joining_date) ? $joining_date : null;
                     $sal = !empty($salary) ? $salary : null;
-                    $stmt->bind_param("ssssssssss", $name, $email, $phone, $address, $aadhaar, $j_date, $sal, $status, $hashed_password, $cloud_url);
+                    $photo_path = 'uploads/' . $file_name;
+                    $stmt->bind_param("ssssssssss", $name, $email, $phone, $address, $aadhaar, $j_date, $sal, $status, $hashed_password, $photo_path);
                     if ($stmt->execute()) {
                         header("Location: " . $_SERVER['PHP_SELF']);
                         exit();
@@ -121,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
                     }
                     $stmt->close();
                 } else {
-                    $message = "Sorry, there was an error uploading to Cloudinary.";
+                    $message = "Sorry, there was an error uploading photo to server.";
                 }
             }
     }
@@ -178,12 +184,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
             } elseif (!in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif'])) {
                 $error = "Invalid file type.";
             } else {
-                require_once __DIR__ . '/lib_common.php';
-                $cloud_url = upload_to_cloudinary($photo["tmp_name"], $photo["type"], $photo["name"]);
-                if ($cloud_url) {
-                    $target_file = $cloud_url;
+                $upload_dir = __DIR__ . '/uploads/';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+                $ext = pathinfo($photo['name'], PATHINFO_EXTENSION);
+                $file_name = 'worker_' . $id . '_' . time() . '.' . $ext;
+                $target_path = $upload_dir . $file_name;
+                if (move_uploaded_file($photo['tmp_name'], $target_path)) {
+                    $target_file = 'uploads/' . $file_name;
                 } else {
-                    $error = "Error uploading to Cloudinary.";
+                    $error = "Error uploading photo to server.";
                 }
             }
         }

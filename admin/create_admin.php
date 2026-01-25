@@ -51,9 +51,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $message = "Invalid photo format (JPG, PNG, WEBP only).";
                     $msg_type = "warning";
                 } else {
-                    // Cloudinary upload
-                    require_once __DIR__ . '/lib_common.php';
-                    $photo_path = upload_to_cloudinary($photo['tmp_name'], $photo['type'], $photo['name']);
+                    // Local upload
+                    $upload_dir = __DIR__ . '/uploads/';
+                    if (!is_dir($upload_dir)) {
+                        mkdir($upload_dir, 0777, true);
+                    }
+                    $ext = pathinfo($photo['name'], PATHINFO_EXTENSION);
+                    $file_name = 'admin_' . time() . '_' . rand(1000,9999) . '.' . $ext;
+                    $target_path = $upload_dir . $file_name;
+                    if (move_uploaded_file($photo['tmp_name'], $target_path)) {
+                        $photo_path = 'uploads/' . $file_name;
+                    } else {
+                        $message = "Photo upload failed.";
+                        $msg_type = "danger";
+                    }
                 }
             }
 

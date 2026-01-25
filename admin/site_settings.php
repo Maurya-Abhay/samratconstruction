@@ -45,11 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
     echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>Swal.fire({icon:'success',title:'Settings Updated',text:'Settings updated successfully!',showConfirmButton:false,timer:2000});</script>";
 }
 
-// Cloudinary Settings (Separate handling for clarity, though integrated in main form logic above)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_cloudinary'])) {
-    // Re-using the loop above handles this, but explicit check for UI feedback
-    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>Swal.fire({icon:'success',title:'Cloudinary Settings',text:'Cloudinary settings saved!',showConfirmButton:false,timer:2000});</script>";
-}
 
 // Add Slider Image
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_slider_image'])) {
@@ -315,9 +310,8 @@ $current_slider_count = count($slider_images);
                     </form>
                 </div>
 
-                <!-- Right Column: Cloudinary & Logo -->
+                <!-- Right Column: Logo Upload -->
                 <div class="col-lg-4">
-                    <!-- Logo Upload -->
                     <div class="settings-card">
                         <div class="card-header-custom">
                             <h5 class="m-0 fw-bold text-dark">Brand Logo</h5>
@@ -338,16 +332,7 @@ $current_slider_count = count($slider_images);
                             </form>
                         </div>
                     </div>
-
-                    <!-- Cloudinary Config -->
-                    <div class="settings-card">
-                        <div class="card-header-custom">
-                            <h5 class="m-0 fw-bold text-dark">Cloud Storage</h5>
-                        </div>
-                        <div class="p-4">
-                            <form method="POST">
-                                <div class="mb-2">
-                                    <input type="text" class="form-control form-control-sm" name="cloud_name" value="<?= htmlspecialchars($settings['cloud_name'] ?? '') ?>" placeholder="Cloud Name">
+                </div>
                                 </div>
                                 <div class="mb-2">
                                     <input type="text" class="form-control form-control-sm" name="cloud_api_key" value="<?= htmlspecialchars($settings['cloud_api_key'] ?? '') ?>" placeholder="API Key">
@@ -430,20 +415,26 @@ $current_slider_count = count($slider_images);
 if (isset($_POST['upload_logo']) && isset($_FILES['logo_image'])) {
     $logo = $_FILES['logo_image'];
     if ($logo['error'] === UPLOAD_ERR_OK && $logo['size'] > 0) {
-        $cloud_url = upload_to_cloudinary($logo['tmp_name'], $logo['type'], $logo['name']);
-        if ($cloud_url) {
-            // Save to DB
+        $upload_dir = __DIR__ . '/uploads/';
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+        $ext = pathinfo($logo['name'], PATHINFO_EXTENSION);
+        $file_name = 'logo_' . time() . '_' . rand(1000,9999) . '.' . $ext;
+        $target_path = $upload_dir . $file_name;
+        if (move_uploaded_file($logo['tmp_name'], $target_path)) {
+            $local_url = 'uploads/' . $file_name;
             $stmt = $conn->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES ('logo_url', ?) ON DUPLICATE KEY UPDATE setting_value=VALUES(setting_value)");
-            $stmt->bind_param('s', $cloud_url);
+            $stmt->bind_param('s', $local_url);
             $stmt->execute();
             $stmt->close();
             echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>Swal.fire({icon:'success',title:'Logo Uploaded',text:'Logo uploaded successfully.',showConfirmButton:false,timer:2000});</script>";
         } else {
-            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>Swal.fire({icon:'error',title:'Upload Error',text:'Error uploading to Cloudinary.',showConfirmButton:false,timer:2000});</script>";
+            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>Swal.fire({icon:'error',title:'Upload Failed',text:'Logo upload failed.',showConfirmButton:false,timer:2000});</script>";
         }
-    } else {
-        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>Swal.fire({icon:'warning',title:'Invalid File',text:'Invalid logo file.',showConfirmButton:false,timer:2000});</script>";
-    }
+    } 
+} else {
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>Swal.fire({icon:'warning',title:'Invalid File',text:'Invalid logo file.',showConfirmButton:false,timer:2000});</script>";
 }
 ?>
 
